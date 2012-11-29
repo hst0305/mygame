@@ -1,0 +1,50 @@
+.none{
+	display: none;
+}
+#gameCanvas {
+	width:480px;
+	height:800px;
+	border:5px solid #dcdcdc;
+	display:block;
+	margin:auto;
+	position:relative;
+}
+#gameCanvas canvas {
+	position:absolute;
+	top:0;
+	left:0;
+}
+#gameCanvas canvas#canvassky {
+	z-index:10;
+}
+#gameCanvas canvas#canvashill {
+	z-index:20;
+}
+#gameCanvas canvas#canvashillnear {
+	z-index:30;
+}
+#gameCanvas canvas#canvasfloor {
+	z-index:40;
+}
+#gameCanvas canvas#canvasstair {
+	z-index:50;
+}
+#gameCanvas canvas#canvas {
+	z-index:90;
+}
+#startBut span {
+	display:none
+}
+#startBut {
+	position:absolute;
+	left:33%;
+	top:70%;
+	width:170px;
+	height:108px;
+	cursor:pointer;
+	background:url("./images/icon.png") no-repeat -219px -1400px;
+	z-index: 100;
+}
+div.fbg{
+	background:url("./images/background.jpg") no-repeat left top;
+}

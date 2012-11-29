@@ -1,0 +1,44 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+		<meta charset="UTF-8" />
+		<title>HTML5版驴子跳(Donkey Jump) - HTML5游戏 - 御剑神兵的博客 - 专注前端技术研究</title>
+		<meta name="description" content="这是一个基于HTML5 Canvas和Audio开发的游戏,提供源码下载和详细的注释" />
+		<meta name="keywords"  content="Web前端, 前端开发, JavaScript, HTML, Canvas, Audio, HTML5画布, HTML5游戏, HTML5版驴子跳(Donkey Jump)" />
+		<link type="text/css" rel="stylesheet" href="main.css" />
+	</head>
+	<body>
+		<div id="donkeyJump">
+			<!-- 游戏主体 -->
+			<div id="gameBody" class="block">
+				<div id="gameCanvas" class="fbg">
+					<canvas width="480" height="800" id="canvassky"></canvas>
+					<canvas width="480" height="800" id="canvashill"></canvas>
+					<canvas width="480" height="800" id="canvashillnear"></canvas>
+					<canvas width="480" height="800" id="canvasfloor"></canvas>
+					<canvas width="480" height="800" id="canvasstair"></canvas>
+					<canvas width="480" height="800" id="canvas"></canvas>
+					<div id="startBut"><span>开始游戏</span></div>
+				</div>
+				<div id="msg">游戏加载....</div>
+				<div id="msg1"></div>
+			</div>
+		</div>
+		
+		<canvas width="480" height="800" id="test" style="border: 3px solid #dcdcdc;"></canvas>
+		
+		
+		<script type="text/javascript" src="Base.js"></script>
+		<script type="text/javascript" src="Game.js"></script>
+		<script type="text/javascript" src="Layer.js"></script>
+		<script type="text/javascript" src="Viewport.js"></script>
+		<script type="text/javascript" src="Sprite.js"></script>
+		<script type="text/javascript" src="MapSprite.js"></script>
+		<script type="text/javascript" src="Animation.js"></script>
+		<script type="text/javascript" src="DonkeyJump.js"></script>
+		<script type="text/javascript" src="frames.js"></script>
+		<script type="text/javascript" src="KeyEvent.js"></script>
+		<script type="text/javascript" src="Main.js"></script>
+		
+</html>

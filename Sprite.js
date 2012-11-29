@@ -50,7 +50,32 @@ function Sprite(cfg) {
 	 * 上一垂直移动速度
 	 */
 	this.lastSpeedY = 0;
+	/**
+	 * 透明度
+	 */
+	this.alpha;
+	/**
+	 * 旋转
+	 */
+	this.rotation;
+	/**
+	 * 翻转
+	 */
+	this.flipX;
+	/**
+	 * 翻转
+	 */
+	this.flipY;
+	/**
+	 * 缩放
+	 */
+	this.scaleX = 1;
+	/**
+	 * 缩放
+	 */
+	this.scaleY = 1;
 	this.visible = true;
+	this.__ID=null;
 	this.parent=null;
 	/**
 	 * 初始化状态
@@ -166,4 +191,5 @@ Sprite.prototype.destory = function() {
 		this.anim.destory();
 		this.anim = null;
 	}
+	this.parent.reMoveSprite(this.__ID);
 };

@@ -3,34 +3,11 @@
  */
 function Layer(cfg) {
 	this.canvas = "";
-	this.x=0;
-	this.y=0;
-	/**
-	 * 透明度
-	 */
-	this.alpha;
-	/**
-	 * 旋转
-	 */
-	this.rotation;
-	this.width;
-	this.height;
-	/**
-	 * 翻转
-	 */
-	this.flipX;
-	/**
-	 * 翻转
-	 */
-	this.flipY;
-	/**
-	 * 缩放
-	 */
-	this.scaleX = 1;
-	/**
-	 * 缩放
-	 */
-	this.scaleY = 1;
+	this.x = 0;
+	this.y = 0;
+	this.width
+	this.height
+
 	/**
 	 * 视口对象
 	 */
@@ -68,6 +45,7 @@ function Layer(cfg) {
 	 * 分层状态是否改变
 	 */
 	this.__change = true;
+	this.__ID=null;
 	/**
 	 * 初始化状态
 	 */
@@ -84,9 +62,9 @@ Layer.prototype.init = function(oParent) {
 	this.setCanvas(this.canvas);
 	var sprite = this.sprite;
 	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		var item=sprite[i];
-		item.x/=this.distance;
-		item.y/=this.distance;
+		var item = sprite[i];
+		item.x /= this.distance;
+		item.y /= this.distance;
 		item.init(this);
 	}
 	this.initialized = true;
@@ -172,24 +150,54 @@ Layer.prototype.update = function(deltaTime) {
  * 变形处理
  */
 Layer.prototype.__transform = function(sprite) {
-	var __s=sprite;
+	var __s = sprite;
 	//sY=sprite.y,sX=sprite.x,sW=sprite.width,sH=sprite.height;
-	this.__contextBuffer.translate(__s.x,__s.y);
-	
-	// 翻转
-	if (this.flipX || this.flipY) {
-		this.__contextBuffer.translate(this.flipX ? __s.width : 0, this.flipY ? __s.height : 0);
-		this.__contextBuffer.scale(this.flipX ? -1 : 1, this.flipY ? -1 : 1);
+	this.__contextBuffer.translate(__s.x, __s.y);
+
+	// 透明度
+	if (__s.alpha < 1) {
+		this.__contextBuffer.globalAlpha = __s.alpha;
 	}
-	
+
+	// 旋转
+	if (__s.rotation % 360 > 0) {
+		var offset = [__s.width / 2, __s.height / 2];
+		this.__contextBuffer.translate(offset[0], offset[1]);
+		this.__contextBuffer.rotate(__s.rotation % 360 / 180 * Math.PI);
+		this.__contextBuffer.translate(-offset[0], -offset[1]);
+	}
+
+	// 翻转
+	if (__s.flipX || __s.flipY) {
+		this.__contextBuffer.translate(__s.flipX ? __s.width : 0, __s.flipY ? __s.height : 0);
+		this.__contextBuffer.scale(__s.flipX ? -1 : 1, __s.flipY ? -1 : 1);
+	}
+
+	// 缩放
+	if (__s.scaleX != 1 || __s.scaleY != 1) {
+		this.__contextBuffer.scale(__s.scaleX, __s.scaleY);
+	}
+
 };
 /**
  * 添加精灵
  * @param {Context Object} sprite
  */
 Layer.prototype.putSprite = function(sprite) {
+	var index=this.sprite.length;
+	sprite.__ID=index;
 	this.sprite.push(sprite);
 };
+/**
+ * 删除精灵
+ * @param {id int} sprite
+ */
+Layer.prototype.reMoveSprite = function(id) {
+	var sprite=this.sprite;
+	sprite.splice(id,1);
+	for(var i=0,ln=sprite.length;i<ln;i++){
+		sprite[i].__ID=i;
+	}};
 /**
  * destory
  */
@@ -199,4 +207,5 @@ Layer.prototype.destory = function() {
 		this.sprite[i].destory();
 	}
 	this.sprite = null;
+	this.parent.reMoveLayer(this.__ID);
 };

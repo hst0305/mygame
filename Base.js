@@ -95,29 +95,50 @@ GC.getImageRes = function() {
 	}, {
 		id : "floor",
 		src : "./images/floor.png"
-	},{
+	}, {
 		id : "daiji",
 		src : "./images/daiji.png"
-	},{
+	}, {
 		id : "stair_friable",
 		src : "./images/stair_friable.png"
-	},{
+	}, {
 		id : "stair_moveable",
 		src : "./images/stair_moveable.png"
-	},{
+	}, {
 		id : "stair_stable_01",
 		src : "./images/stair_stable_01.png"
-	},{
+	}, {
 		id : "stair_stable_02",
 		src : "./images/stair_stable_02.png"
-	},{
+	}, {
 		id : "stair_stable_03",
 		src : "./images/stair_stable_03.png"
-	},{
+	}, {
 		id : "stair_stable_04",
 		src : "./images/stair_stable_04.png"
-	},{
+	}, {
 		id : "stair_stable_05",
 		src : "./images/stair_stable_05.png"
+	}, {
+		id : "prop_spring01",
+		src : "./images/prop_spring01.png"
+	}, {
+		id : "prop_spring03",
+		src : "./images/prop_spring03.png"
+	}, {
+		id : "props_balloon",
+		src : "./images/props_balloon.png"
+	}, {
+		id : "props_gliding01",
+		src : "./images/props_gliding01.png"
+	}, {
+		id : "props_michael",
+		src : "./images/props_michael.png"
+	}, {
+		id : "props_super",
+		src : "./images/props_super.png"
+	}, {
+		id : "props_ufo",
+		src : "./images/props_ufo.png"
 	}];
 }

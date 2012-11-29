@@ -45,7 +45,7 @@ var DonkeyJump = {
 	/**
 	 * 驴子开始跳时的位置
 	 */
-	donkeyJumpStartY:0,
+	donkeyJumpStartY : 0,
 	/**
 	 * 驴子普通跳的高度
 	 */
@@ -68,6 +68,7 @@ var DonkeyJump = {
 	 * 游戏对象
 	 */
 	game : null,
+	LV : 0,
 
 	/**
 	 * 是否即将开始
@@ -125,28 +126,55 @@ DonkeyJump.__createDonkey = function() {
 		width : 128,
 		height : 128,
 		minTop : 0,
-		direction:'',
-		inertia:0
+		direction : ''
 	});
 	DonkeyJump.donkeyLayer.putSprite(DonkeyJump.donkey);
 }
-DonkeyJump.__createStair =function(){
-	DonkeyJump.stair = new Sprite({
+DonkeyJump.random = function(min, max) {
+	return Math.floor((max - min + 1) * Math.random()) + min;
+}
+DonkeyJump.getStairName = ["stair_friable", "stair_moveable", "stair_stable_01", "stair_stable_02", "stair_stable_03", "stair_stable_04", "stair_stable_05"];
+DonkeyJump.getProps = ["prop_spring01", "props_balloon", "props_gliding01", "props_michael", "props_super", "props_ufo"];
+DonkeyJump.stairTop = DonkeyJump.viewportDefault[1] + 560;
+DonkeyJump.creatStair = function() {
+	var stairName = DonkeyJump.getStairName[DonkeyJump.random(0, 6)];
+	DonkeyJump.stairTop -= (200+DonkeyJump.LV*10);
+	var stair = new Sprite({
 		width : 256,
-		height : 128
+		height : 128,
+		y : DonkeyJump.stairTop,
+		x : DonkeyJump.random(0, 350)
 	});
-	DonkeyJump.stair2 = new Sprite({
-		width : 256,
-		height : 128
+	stair.anim = new Animation({
+		image : GC.ImageManager.get(stairName),
+		frames : getStairFrames(stairName)
 	});
-	DonkeyJump.stair3 = new Sprite({
-		width : 256,
-		height : 128
-	});
-	DonkeyJump.stairLayer.putSprite(DonkeyJump.stair);
-	DonkeyJump.stairLayer.putSprite(DonkeyJump.stair2);
-	DonkeyJump.stairLayer.putSprite(DonkeyJump.stair3);
-};
+	stair.update = function() {
+		if (this.y > DonkeyJump.viewport.y + 800) {
+			this.destory();
+			DonkeyJump.creatStair();
+		} else if (this.stair_moveable) {
+			if ((this.x < 0 ) || (this.x > 350 )) {
+				this.speedX = -this.speedX;
+			}
+		}
+		this.parent.change();
+	}
+	DonkeyJump.stairLayer.putSprite(stair);
+	stair.init(DonkeyJump.stairLayer);
+	if (stairName == "stair_moveable") {
+		stair.speedX = DonkeyJump.random(10, 20) / 100;
+		if (DonkeyJump.random(1, 10) == 5) {
+			stair.speedX = -stair.speedX;
+		}
+		stair.stair_moveable = true;
+	}
+	if (stairName == "stair_friable") {
+		stair.anim.loop = false;
+		stair.anim.gotoAndStop(0);
+		stair.stair_friable = true;
+	}
+}
 /**
  * @private
  * 创建场景
@@ -165,7 +193,6 @@ DonkeyJump.__createScene = function() {
 		image : GC.ImageManager.get("hillnear"),
 		width : 480,
 		height : 613,
-		//y:9275
 		y : DonkeyJump.viewportDefault[1] + (800 - 613) * DonkeyJump.hillNearLayer.distance
 	});
 	var floorSprite = new MapSprite({
@@ -184,24 +211,11 @@ DonkeyJump.__createScene = function() {
  */
 DonkeyJump.init = function() {
 	DonkeyJump.__createLayers();
-	DonkeyJump.__createStair();
 	DonkeyJump.__createDonkey();
 	DonkeyJump.__createScene();
 	DonkeyJump.donkey.anim = new Animation({
 		image : GC.ImageManager.get("jump"),
 		frames : getDonkeyFrames("jump")
-	});
-	DonkeyJump.stair.anim = new Animation({
-		image : GC.ImageManager.get("stair_stable_01"),
-		frames : getStairFrames("stair_stable_01")
-	});
-	DonkeyJump.stair2.anim = new Animation({
-		image : GC.ImageManager.get("stair_stable_01"),
-		frames : getStairFrames("stair_stable_01")
-	});
-	DonkeyJump.stair3.anim = new Animation({
-		image : GC.ImageManager.get("stair_stable_01"),
-		frames : getStairFrames("stair_stable_01")
 	});
 	DonkeyJump.game = new Game({
 		instance : "DonkeyJump.game",
@@ -222,31 +236,27 @@ DonkeyJump.renderBg = function() {
 	DonkeyJump.hillNearLayer.change();
 	DonkeyJump.floorLayer.change();
 	DonkeyJump.stairLayer.change();
-	
+
 }
 /**
  * 初始化状态
  */
 DonkeyJump.stateInit = function() {
-	// 移动视口到默认位置
-	DonkeyJump.viewport.move(DonkeyJump.viewportDefault[0], DonkeyJump.viewportDefault[1], true);
-	// 初始化驴子状态
-	DonkeyJump.donkey.x = 176;
-	DonkeyJump.donkey.y = DonkeyJump.viewportDefault[1] + 530;
-	DonkeyJump.donkey.minTop = DonkeyJump.donkey.y;
-	DonkeyJump.stair.x = 176;
-	DonkeyJump.stair.y = DonkeyJump.viewportDefault[1]+360;
-	DonkeyJump.stair2.x = 176;
-	DonkeyJump.stair2.y = DonkeyJump.viewportDefault[1]+200;
-	DonkeyJump.stair3.x = 176;
-	DonkeyJump.stair3.y = DonkeyJump.viewportDefault[1]+40;
 	GC.DOM.get("startBut").onclick = function() {
-		GC.DOM.get("gameCanvas").className = "";
-		GC.DOM.get("startBut").className = "none";
-		//DonkeyJump.donkey.mimTop = 0;
+		// 移动视口到默认位置
+		DonkeyJump.viewport.move(DonkeyJump.viewportDefault[0], DonkeyJump.viewportDefault[1], true);
+		// 初始化驴子状态
+		DonkeyJump.donkey.x = 176;
+		DonkeyJump.donkey.y = DonkeyJump.viewportDefault[1] + 530;
+		DonkeyJump.donkey.minTop = DonkeyJump.donkey.y;
 		DonkeyJump.donkey.speedY = -1;
 		DonkeyJump.donkey.acceY = 1 / 600;
 		DonkeyJump.game.start();
+		for (var i = 0; i < 10; i++) {
+			DonkeyJump.creatStair();
+		}
+		GC.DOM.get("gameCanvas").className = "";
+		GC.DOM.get("startBut").className = "none";
 	};
 
 	// 停止游戏时
@@ -264,78 +274,59 @@ DonkeyJump.stateInit = function() {
 		} else {
 			DonkeyJump.keyDownLeft = false;
 		}
-		
+
 		if (GC.KeyEvent.check('VK_RIGHT') || GC.KeyEvent.check('D')) {
 			DonkeyJump.keyDownRight = true;
 		} else {
 			DonkeyJump.keyDownRight = false;
 		}	}
 	DonkeyJump.donkey.update = function(deltaTime) {
-		//DonkeyJump.jumpHeight+=Math.abs(DonkeyJump.donkey.lastY-DonkeyJump.donkey.y);
+		if (DonkeyJump.keyDownLeft) {
+			if (this.direction != 'left') {
+				this.flipX = true;
+				this.direction = 'left';
+			}
+			this.speedX = -0.25;
+		} else if (DonkeyJump.keyDownRight) {
+			if (this.direction != 'right') {
+				this.flipX = false;
+				this.direction = 'right';
+			}
+			this.speedX = 0.25;
+		} else {
+			this.lastSpeedX = 0;
+			this.speedX = 0;
+		}
 
-		//GC.DOM.get("msg1").innerHTML=DonkeyJump.jumpHeight;
-
-		// this.mimTop += Math.abs(this.y - this.lastY);
-		// if (this.jumpHeight >= 500) {
-		// this.speedY = 0.5;
-		// this.acceY = 1 / 600;
-		// this.jumpHeight = 0;
-		// }
-		// if (this.y > 550) {
-		// this.speedY = 0;
-		// this.acceY = 0;
-		// //this.parent.viewport.move(0, 0);
-		// } else {
-		// //this.parent.viewport.move(0, 5);
-		// }
-		
-		//DonkeyJump.donkeyJumpStartY+=Math.abs(DonkeyJump.donkey.lastY-DonkeyJump.donkey.y);		//DonkeyJump.viewportMove();
-		
-        
-        if(DonkeyJump.keyDownLeft) {
-            if(this.direction != 'left') {
-                this.parent.flipX = true;
-                this.direction = 'left';
-            }
-            this.speedX = -0.25;
-        } else if(DonkeyJump.keyDownRight) {
-            if(this.direction != 'right') {
-                this.parent.flipX = false;
-                this.direction = 'right';
-            }
-            this.speedX = 0.25;
-        } else {
-           	this.lastSpeedX=0;
-            this.speedX = 0;
-        }
-        
-		if(this.lastY>this.y){
-			if(this.y < 45776) {
-				var vy=this.y - 336;
-				vy=vy>DonkeyJump.viewport.y?DonkeyJump.viewport.y:vy;
+		if (this.lastY > this.y) {
+			if (this.y < 45776) {
+				var vy = this.y - 336;
+				vy = vy > DonkeyJump.viewport.y ? DonkeyJump.viewport.y : vy;
 				DonkeyJump.renderBg();
-	        	DonkeyJump.viewport.move(0, vy, true);
-	        }
-			
-		}else{
-			if(this.hitTest(DonkeyJump.stair)||this.hitTest(DonkeyJump.stair2)||this.hitTest(DonkeyJump.stair3)){
-				//DonkeyJump.game.stop();
-				var donkeyY=this.y;
-				this.minTop=donkeyY;
-				this.lastSpeedY=0;
-				this.speedY = -1;
-				this.acceY = 1 / 600;
-				this.anim.init();
-			}else{
-				if(this.y>this.minTop){
-					DonkeyJump.donkey.speedY = 0;
-					DonkeyJump.donkey.acceY = 0;
-					DonkeyJump.game.stop();
+				DonkeyJump.viewport.move(0, vy, true);
+			}
+
+		} else {
+			var stair = DonkeyJump.stairLayer.sprite;
+			for (var i = 0, ln = stair.length; i < ln; i++) {
+				if (this.hitTest(stair[i])) {
+					if (stair[i].stair_friable) {
+						stair[i].anim.play();
+					};
+					this.minTop = this.y;
+					this.lastSpeedY = 0;
+					this.speedY = -1;
+					this.acceY = 1 / 600;
+					this.anim.init();
+					break;
 				}
 			}
-		}		
-		this.parent.change();
-	}	// this.donkey.minTop = this.donkey.y;
+			if (this.y > this.minTop) {
+				this.speedY = 0;
+				this.acceY = 0;
+				DonkeyJump.game.stop();
+			}
+		}		this.parent.change();	}	// this.donkey.minTop = this.donkey.y;
 	// this.donkey.reset();
 	// // 预备时间清零
 	// this.readyTime = 0;
@@ -378,11 +369,10 @@ DonkeyJump.layerChnage = function() {
 DonkeyJump.viewportMove = function() {
 	// var donkey = DonkeyJump.donkey, donkeyY = donkey.y, viewport = DonkeyJump.viewport;
 	// if (donkeyY < donkey.lastY) {// 向上移动
-		// if (donkeyY < donkey.minTop) {
-// 
-		// }
+	// if (donkeyY < donkey.minTop) {
+	//
+	// }
 	// }
-
 	//if(DonkeyJump.jumpHeight>366){
 	//DonkeyJump.jumpHeight=0;
 	//DonkeyJump.donkey.speedY = 0;
@@ -390,11 +380,10 @@ DonkeyJump.viewportMove = function() {
 	// DonkeyJump.donkey.y-=2;
 	// DonkeyJump.renderBg();	//}
 	// if (DonkeyJump.test) {
-		// DonkeyJump.test = false;
-		// DonkeyJump.viewport.move(0, 360);
-		// DonkeyJump.renderBg();
+	// DonkeyJump.test = false;
+	// DonkeyJump.viewport.move(0, 360);
+	// DonkeyJump.renderBg();
 	// }
-
 	// var donkey = this.donkey, viewport = this.viewport;
 	// var donkeyY = donkey.y;
 	//

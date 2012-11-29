@@ -129,7 +129,19 @@ Game.prototype.stop = function() {
  * 添加图层
  */
 Game.prototype.putLayer = function(layer) {
-	this.layer.push(layer);
+	var __ID=this.layer.length;
+	this.layer[__ID]=layer;
+	layer.__ID=__ID;
+};
+/**
+ * 删除图层
+ */
+Game.prototype.reMoveLayer = function(id) {
+	var layer=this.layer,ln=layer.length;;
+	layer.splice(id,1);
+	for(var i=0;i<ln;i++){
+		this.layer.__ID=i;
+	}
 };
 /**
  * 渲染游戏
@@ -157,5 +169,6 @@ Game.prototype.destory = function() {
 	for (var i = 0, ln = this.layer.length; i < ln; i++) {
 		this.layer[i].destory();
 	}
+	this.layer=null;
 
 };

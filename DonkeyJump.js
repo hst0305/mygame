@@ -111,7 +111,10 @@ DonkeyJump.__createLayers = function() {
 		viewport : DonkeyJump.viewport,
 		canvas : "canvasstair",
 	});
-
+	DonkeyJump.propsLayer = new Layer({
+		viewport : DonkeyJump.viewport,
+		canvas : "canvasprops",
+	});
 	DonkeyJump.donkeyLayer = new Layer({
 		viewport : DonkeyJump.viewport,
 		canvas : "canvas"
@@ -134,11 +137,51 @@ DonkeyJump.random = function(min, max) {
 	return Math.floor((max - min + 1) * Math.random()) + min;
 }
 DonkeyJump.getStairName = ["stair_friable", "stair_moveable", "stair_stable_01", "stair_stable_02", "stair_stable_03", "stair_stable_04", "stair_stable_05"];
-DonkeyJump.getProps = ["prop_spring01", "props_balloon", "props_gliding01", "props_michael", "props_super", "props_ufo"];
+DonkeyJump.getPropsName = ["prop_spring01", "props_balloon", "props_gliding01", "props_michael", "props_super", "props_ufo"];
+DonkeyJump.propsLists = {
+	prop_spring01 : {
+		width : 41,
+		height : 14
+	},
+	props_balloon : {
+		width : 54,
+		height : 64
+	},
+	props_gliding01 : {
+		width : 75,
+		height : 64
+	},
+	props_michael : {
+		width : 80,
+		height : 45
+	},
+	props_super : {
+		width : 58,
+		height : 84
+	},
+	props_ufo : {
+		width : 71,
+		height : 44
+	}
+};
+DonkeyJump.getProps = function() {
+	var propsName = DonkeyJump.getPropsName[DonkeyJump.random(0, 5)];
+	//var __prop=DonkeyJump.propsLists[propsName];
+	var prop = new Sprite(DonkeyJump.propsLists[propsName]);
+	prop.anim = new Animation({
+		image : GC.ImageManager.get(propsName),
+		frames : getPropFrames(propsName),
+		loop : false
+	});
+	DonkeyJump.propsLayer.putSprite(prop);
+	prop.init(DonkeyJump.propsLayer);
+	return prop;
+}
 DonkeyJump.stairTop = DonkeyJump.viewportDefault[1] + 560;
 DonkeyJump.creatStair = function() {
-	var stairName = DonkeyJump.getStairName[DonkeyJump.random(0, 6)];
-	DonkeyJump.stairTop -= (200+DonkeyJump.LV*10);
+	var index = DonkeyJump.random(0, 6);
+	var stairName = DonkeyJump.getStairName[index];
+	DonkeyJump.stairTop -= (200 + DonkeyJump.LV * 10);
 	var stair = new Sprite({
 		width : 256,
 		height : 128,
@@ -149,6 +192,11 @@ DonkeyJump.creatStair = function() {
 		image : GC.ImageManager.get(stairName),
 		frames : getStairFrames(stairName)
 	});
+	if(5==index){
+		stair.prop = DonkeyJump.getProps();
+		stair.prop.x=stair.x+Math.abs(stair.prop.width-128)/2;
+		stair.prop.y=stair.y-stair.prop.height+10;
+	}
 	stair.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
 			this.destory();
@@ -226,6 +274,7 @@ DonkeyJump.init = function() {
 	DonkeyJump.game.putLayer(DonkeyJump.hillNearLayer);
 	DonkeyJump.game.putLayer(DonkeyJump.floorLayer);
 	DonkeyJump.game.putLayer(DonkeyJump.stairLayer);
+	DonkeyJump.game.putLayer(DonkeyJump.propsLayer);	
 	DonkeyJump.game.putLayer(DonkeyJump.donkeyLayer);
 	DonkeyJump.game.init();
 	DonkeyJump.stateInit();
@@ -236,7 +285,7 @@ DonkeyJump.renderBg = function() {
 	DonkeyJump.hillNearLayer.change();
 	DonkeyJump.floorLayer.change();
 	DonkeyJump.stairLayer.change();
-
+	DonkeyJump.propsLayer.change();
 }
 /**
  * 初始化状态
@@ -309,10 +358,17 @@ DonkeyJump.stateInit = function() {
 		} else {
 			var stair = DonkeyJump.stairLayer.sprite;
 			for (var i = 0, ln = stair.length; i < ln; i++) {
-				if (this.hitTest(stair[i])) {
-					if (stair[i].stair_friable) {
-						stair[i].anim.play();
+				var __stair=stair[i];
+				if (this.hitTest(__stair)) {
+					if (__stair.stair_friable) {
+						__stair.anim.play();
 					};
+					if(__stair.prop){
+						if(this.hitTest(__stair.prop)){
+							__stair.prop.destory();
+							__stair.prop.parent.change();
+						}
+					}
 					this.minTop = this.y;
 					this.lastSpeedY = 0;
 					this.speedY = -1;

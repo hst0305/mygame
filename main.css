@@ -29,6 +29,9 @@
 #gameCanvas canvas#canvasstair {
 	z-index:50;
 }
+#gameCanvas canvas#canvasprops {
+	z-index:60;
+}
 #gameCanvas canvas#canvas {
 	z-index:90;
 }

@@ -192,10 +192,10 @@ DonkeyJump.creatStair = function() {
 		image : GC.ImageManager.get(stairName),
 		frames : getStairFrames(stairName)
 	});
-	if(5==index){
+	if (5 == index) {
 		stair.prop = DonkeyJump.getProps();
-		stair.prop.x=stair.x+Math.abs(stair.prop.width-128)/2;
-		stair.prop.y=stair.y-stair.prop.height+10;
+		stair.prop.x = stair.x + Math.abs(stair.prop.width - 128) / 2;
+		stair.prop.y = stair.y - stair.prop.height + 10;
 	}
 	stair.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
@@ -265,6 +265,11 @@ DonkeyJump.init = function() {
 		image : GC.ImageManager.get("jump"),
 		frames : getDonkeyFrames("jump")
 	});
+	DonkeyJump.donkey.animName="jump";
+	DonkeyJump.donkey.setAnim=function(animName){
+		this.anim.frames=getDonkeyFrames(animName);
+		this.animName=animName;
+	}
 	DonkeyJump.game = new Game({
 		instance : "DonkeyJump.game",
 		FPS : 30
@@ -274,7 +279,7 @@ DonkeyJump.init = function() {
 	DonkeyJump.game.putLayer(DonkeyJump.hillNearLayer);
 	DonkeyJump.game.putLayer(DonkeyJump.floorLayer);
 	DonkeyJump.game.putLayer(DonkeyJump.stairLayer);
-	DonkeyJump.game.putLayer(DonkeyJump.propsLayer);	
+	DonkeyJump.game.putLayer(DonkeyJump.propsLayer);
 	DonkeyJump.game.putLayer(DonkeyJump.donkeyLayer);
 	DonkeyJump.game.init();
 	DonkeyJump.stateInit();
@@ -358,13 +363,13 @@ DonkeyJump.stateInit = function() {
 		} else {
 			var stair = DonkeyJump.stairLayer.sprite;
 			for (var i = 0, ln = stair.length; i < ln; i++) {
-				var __stair=stair[i];
+				var __stair = stair[i];
 				if (this.hitTest(__stair)) {
 					if (__stair.stair_friable) {
 						__stair.anim.play();
 					};
-					if(__stair.prop){
-						if(this.hitTest(__stair.prop)){
+					if (__stair.prop) {
+						if (this.hitTest(__stair.prop)) {
 							__stair.prop.destory();
 							__stair.prop.parent.change();
 						}
@@ -382,26 +387,7 @@ DonkeyJump.stateInit = function() {
 				this.acceY = 0;
 				DonkeyJump.game.stop();
 			}
-		}		this.parent.change();	}	// this.donkey.minTop = this.donkey.y;
-	// this.donkey.reset();
-	// // 预备时间清零
-	// this.readyTime = 0;
-	// this.isGo = false;
-	// // 积分清零
-	// this.setScore(0);
-	// // 创建默认云层
-	// this.__createDefaultStair();
-	// // 重绘
-	// this.skyLayer.change();
-	// this.hillLayer.change();
-	// this.hillNearLayer.change();
-	// this.floorLayer.change();
-	// this.stairLayer.change();
-	// this.effectLayer.change();
-	// this.donkeyLayer.change();
-	// // UI
-	// this.ui.btnPauseVisible(false);
-}
+		}		this.parent.change();	}}
 /**
  * 根据视口位置更新层状态
  */
@@ -420,84 +406,132 @@ DonkeyJump.layerChnage = function() {
 	}
 }
 /**
- * 驴子垂直移动时控制视口
+ * @private
+ * 普通跳跃
  */
-DonkeyJump.viewportMove = function() {
-	// var donkey = DonkeyJump.donkey, donkeyY = donkey.y, viewport = DonkeyJump.viewport;
-	// if (donkeyY < donkey.lastY) {// 向上移动
-	// if (donkeyY < donkey.minTop) {
-	//
-	// }
-	// }
-	//if(DonkeyJump.jumpHeight>366){
-	//DonkeyJump.jumpHeight=0;
-	//DonkeyJump.donkey.speedY = 0;
-	// DonkeyJump.viewport.move(0,2);
-	// DonkeyJump.donkey.y-=2;
-	// DonkeyJump.renderBg();	//}
-	// if (DonkeyJump.test) {
-	// DonkeyJump.test = false;
-	// DonkeyJump.viewport.move(0, 360);
-	// DonkeyJump.renderBg();
-	// }
-	// var donkey = this.donkey, viewport = this.viewport;
-	// var donkeyY = donkey.y;
-	//
-	// if (donkeyY < donkey.lastY) {// 向上移动
-	// if (donkeyY < donkey.minTop) {
-	// if (donkeyY < 45776) {
-	// viewport.move(0, donkeyY - 336, true);
-	// }
-	//
-	// this.setScore(45970 - donkeyY);
-	// this.layerChnage();
-	//
-	// donkey.minTop = donkeyY;
-	// this.__stairControl();
-	// }
-	// } else if (donkey.animName == 'jump') {// 跳跃时向下移动
-	// if (donkey.y + donkey.height > viewport.y + 800) {// 死亡
-	// donkey.dead();
-	// } else {
-	// var stairLayer = this.stairLayer;
-	// var stairs = stairLayer.getChilds();
-	//
-	// for (var i = 0, len = stairs.length; i < len; i++) {
-	// var stair = stairs[i];
-	//
-	// if (stair && donkey.hitTest(stair)) {
-	// // 与云层碰撞
-	// if ( stair instanceof Prop) {
-	// stair.stepon(donkey);
-	// } else {
-	// var cloud = new Cloud({
-	// x : donkey.x + (donkey.direction == 'left' ? 45 : 35),
-	// y : stair.y - 16,
-	// width : 64,
-	// height : 16
-	// });
-	// var self = this;
-	//
-	// cloud.onupdate = cloud.ondestory = function() {
-	// self.effectLayer.change();
-	// }
-	// this.effectLayer.appendChild(cloud);
-	// cloud.init();
-	//
-	// var name = stair.name;
-	// if (name == 'stair_friable') {// 脆弱的云
-	// Audio.play('ogg_step_broken');
-	// stair.anim.play();
-	// } else if (name == 'stair_moveable') {// 会移动的云
-	// stair.anim.gotoAndPlay(1);
-	// }
-	//
-	// donkey.jump();
-	// }
-	// }
-	// }
-	// }
-	// }
+DonkeyJump.jump = function() {
+	if (DonkeyJump.donkey.animName != 'jump') {
+		this.setAnim('jump');
+		this.speedY = -1;
+		this.acceY = 1 / 600;
+		this.width = 128;
+		this.height = 128;
+	}
+}
+/**
+ * 超人跳跃
+ */
+DonkeyJump.superJump = function() {
+	if (this.__superJumpHeight > 1200) {
+		this.__superJumpHeight = 0;
+		this.stateUpdate = this.__jump;
+		return false;
+	} else {
+		this.__superJumpHeight += (this.lastY - this.y);
+	}
+
+	if (this.animName != 'superjump') {
+		Audio.play('ogg_super');
+		this.setAnim('superjump');
+		this.speedY = -0.8;
+		this.acceY = 0;
+	}
+}
+/**
+ * MJ
+ */
+DonkeyJump.MJ = function() {
+	if (this.__MJHeight > 1200) {
+		this.__MJHeight = 0;
+		this.stateUpdate = this.__jump;
+		return false;
+	} else {
+		this.__MJHeight += (this.lastY - this.y);
+	}
+
+	if (this.animName != 'MJ') {
+		this.setAnim('MJ');
+		this.speedY = -0.5;
+		this.acceY = 0;
+		this.flipX = false;
+	}
+}
+/**
+ * 滑行
+ */
+DonkeyJump.gliding = function() {
+	if (this.__glidingHeight > 1200) {
+		this.__glidingHeight = 0;
+		this.stateUpdate = this.__jump;
+		return false;
+	} else {
+		this.__glidingHeight += (this.lastY - this.y);
+	}
+
+	if (this.animName != 'plan') {
+		this.setAnim('plan');
+		this.speedY = -0.5;
+		this.acceY = 0;
+		this.flipX = false;
+		this.width = 256;
+		this.height = 256;
+	}
+}
+/**
+ * UFO
+ */
+DonkeyJump.UFO = function() {
+	if (this.__UFOHeight > 1200) {
+		this.__UFOHeight = 0;
+		this.stateUpdate = this.__jump;
+		return false;
+	} else {
+		this.__UFOHeight += (this.lastY - this.y);
+	}
+
+	if (this.animName != 'UFO') {
+		this.setAnim('UFO');
+		this.speedY = -0.5;
+		this.acceY = 0;
+		this.flipX = false;
+		this.width = 256;
+		this.height = 512;
+	}
+}
+/**
+ * 气球
+ */
+DonkeyJump.balloon = function() {
+	if (this.__balloonHeight > 1200) {
+		this.__balloonHeight = 0;
+		this.stateUpdate = this.__jump;
+		return false;
+	} else {
+		this.__balloonHeight += (this.lastY - this.y);
+	}
+
+	if (this.animName != 'qiqiu') {
+		this.setAnim('qiqiu');
+		this.speedY = -0.5;
+		this.acceY = 0;
+		this.flipX = false;
+		this.width = 128;
+		this.height = 128;
+	}
+}
+/**
+ * 死亡
+ */
+DonkeyJump.dead = function() {
+	Audio.pause('ogg_background');
+	Audio.play('ogg_die');
+	this.stateUpdate = this.__dead;
+	this.setAnim('dead');
+	this.speedX = 0;
+	this.speedY = 0.15;
+	this.acceX = 0;
+	this.acceY = 1 / 1000;
+	this.flipX = false;
 }
 /**
  * 预备状态

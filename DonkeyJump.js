@@ -2,78 +2,29 @@
  * Donkey Jump游戏类
  */
 var DonkeyJump = {
-
-	/**
-	 * 视口对象
-	 */
 	viewport : null,
-
-	/**
-	 * 天空背景层
-	 */
 	skyLayer : null,
-
-	/**
-	 * 远景山丘背景层
-	 */
 	hillLayer : null,
-
-	/**
-	 * 近景山丘背景层
-	 */
 	hillNearLayer : null,
-
-	/**
-	 * 房子背景层
-	 */
 	floorLayer : null,
-
-	/**
-	 * 白云精灵层
-	 */
 	stairLayer : null,
-
-	/**
-	 * 驴子精灵层
-	 */
 	donkeyLayer : null,
-
-	/**
-	 * 驴子
-	 */
 	donkey : null,
-	/**
-	 * 驴子开始跳时的位置
-	 */
 	donkeyJumpStartY : 0,
-	/**
-	 * 驴子普通跳的高度
-	 */
 	jumpHeight : 400,
-	/**
-	 * 视口的初始化位置
-	 */
 	viewportDefault : [0, 45440],
-
-	/**
-	 * 按键状态
-	 */
 	keyDownLeft : false,
 	keyDownRight : false,
-	/**
-	 * 预备时间
-	 */
 	readyTime : 0,
-	/**
-	 * 游戏对象
-	 */
 	game : null,
 	LV : 0,
-
-	/**
-	 * 是否即将开始
-	 */
-	isGo : false
+	isGo : false,
+	__superJumpHeight : 0,
+	__MJHeight : 0,
+	__glidingHeight : 0,
+	__UFOHeight : 0,
+	__balloonHeight : 0,
+	jumpState : GC.fn
 
 };
 
@@ -125,14 +76,138 @@ DonkeyJump.__createLayers = function() {
  * 创建驴子
  */
 DonkeyJump.__createDonkey = function() {
-	DonkeyJump.donkey = new Sprite({
-		width : 128,
-		height : 128,
+	var donkey = new Sprite({
 		minTop : 0,
 		direction : ''
 	});
-	DonkeyJump.donkeyLayer.putSprite(DonkeyJump.donkey);
+	donkey.anim = new Animation({
+		frames : getDonkeyFrames('daiji'),
+		image : GC.ImageManager.get('daiji')
+	});
+	donkey.setAnim = function(animName) {
+		donkey.anim.frames = getDonkeyFrames(animName);
+		donkey.anim.image = GC.ImageManager.get(animName);
+		donkey.animName = animName;
+	};
+	donkey.jump = function() {
+		if (this.animName != 'jump') {
+			this.setAnim('jump');
+			this.width = 128;
+			this.height = 128;
+			this.minTop = this.y;
+			this.lastSpeedY = 0;
+			this.speedY = -1;
+			this.acceY = 1 / 600;
+			this.anim.init(this);
+		}
+	};
+	donkey.__jump = function() {
+		this.setAnim('jump');
+		this.width = 128;
+		this.height = 128;
+		this.minTop = this.y;
+		this.lastSpeedY = 0;
+		this.speedY = -1;
+		this.acceY = 1 / 600;
+		this.anim.init(this);
+	};
+	donkey.superJump = function() {
+		if (DonkeyJump.__superJumpHeight > 1200) {
+			DonkeyJump.__superJumpHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__superJumpHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'superjump') {
+			//Audio.play('ogg_super');
+			this.minTop = this.y;
+			this.setAnim('superjump');
+			this.lastSpeedY = 0;
+			this.speedY = -0.8;
+			this.acceY = 0;
+			this.anim.init(this);
+		}
+	};
+	donkey.MJ = function() {
+		if (DonkeyJump.__MJHeight > 1200) {
+			DonkeyJump.__MJHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__MJHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'MJ') {
+			this.setAnim('MJ');
+			this.minTop = this.y;
+			this.speedY = -0.5;
+			this.acceY = 0;
+			this.flipX = false;
+		}
+	};
+	donkey.gliding = function() {
+		if (DonkeyJump.__glidingHeight > 1200) {
+			DonkeyJump.__glidingHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__glidingHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'plan') {
+			this.minTop = this.y;
+			this.setAnim('plan');
+			this.speedY = -0.5;
+			this.acceY = 0;
+			this.flipX = false;
+			this.width = 256;
+			this.height = 256;
+		}
+	};
+	donkey.UFO = function() {
+		if (DonkeyJump.__UFOHeight > 1200) {
+			DonkeyJump.__UFOHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__UFOHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'UFO') {
+			this.minTop = this.y;
+			this.setAnim('UFO');
+			this.speedY = -0.5;
+			this.acceY = 0;
+			this.flipX = false;
+			this.width = 256;
+			this.height = 512;
+		}
+	};
+	donkey.balloon = function() {
+		if (DonkeyJump.__balloonHeight > 1200) {
+			DonkeyJump.__balloonHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__balloonHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'qiqiu') {
+			this.minTop = this.y;
+			this.setAnim('qiqiu');
+			this.speedY = -0.5;
+			this.acceY = 0;
+			this.flipX = false;
+			this.width = 128;
+			this.height = 128;
+		}
+	}
+	DonkeyJump.donkeyLayer.putSprite(donkey);
+	DonkeyJump.donkey = donkey;
 }
+
 DonkeyJump.random = function(min, max) {
 	return Math.floor((max - min + 1) * Math.random()) + min;
 }
@@ -175,6 +250,7 @@ DonkeyJump.getProps = function() {
 	});
 	DonkeyJump.propsLayer.putSprite(prop);
 	prop.init(DonkeyJump.propsLayer);
+	prop.propsName = propsName;
 	return prop;
 }
 DonkeyJump.stairTop = DonkeyJump.viewportDefault[1] + 560;
@@ -261,16 +337,10 @@ DonkeyJump.init = function() {
 	DonkeyJump.__createLayers();
 	DonkeyJump.__createDonkey();
 	DonkeyJump.__createScene();
-	DonkeyJump.donkey.anim = new Animation({
-		image : GC.ImageManager.get("jump"),
-		frames : getDonkeyFrames("jump")
-	});
-	DonkeyJump.donkey.animName="jump";
-	DonkeyJump.donkey.setAnim=function(animName){
-		this.anim.frames=getDonkeyFrames(animName);
-		this.animName=animName;
-	}
-	DonkeyJump.game = new Game({
+	// DonkeyJump.donkey.anim = new Animation({
+	// image : GC.ImageManager.get("jump"),
+	// frames : getDonkeyFrames("jump")
+	// });	// DonkeyJump.donkey.setAnim("jump");	DonkeyJump.game = new Game({
 		instance : "DonkeyJump.game",
 		FPS : 30
 	});
@@ -302,9 +372,9 @@ DonkeyJump.stateInit = function() {
 		// 初始化驴子状态
 		DonkeyJump.donkey.x = 176;
 		DonkeyJump.donkey.y = DonkeyJump.viewportDefault[1] + 530;
-		DonkeyJump.donkey.minTop = DonkeyJump.donkey.y;
-		DonkeyJump.donkey.speedY = -1;
-		DonkeyJump.donkey.acceY = 1 / 600;
+		// DonkeyJump.donkey.minTop = DonkeyJump.donkey.y;
+		// DonkeyJump.donkey.speedY = -1;
+		// DonkeyJump.donkey.acceY = 1 / 600;
 		DonkeyJump.game.start();
 		for (var i = 0; i < 10; i++) {
 			DonkeyJump.creatStair();
@@ -335,6 +405,13 @@ DonkeyJump.stateInit = function() {
 			DonkeyJump.keyDownRight = false;
 		}	}
 	DonkeyJump.donkey.update = function(deltaTime) {
+		if (!DonkeyJump.isGo) {
+			DonkeyJump.isGo = DonkeyJump.ready(deltaTime);
+			this.width = 128;
+			this.height = 128;
+			this.parent.change();
+			return;
+		}
 		if (DonkeyJump.keyDownLeft) {
 			if (this.direction != 'left') {
 				this.flipX = true;
@@ -351,6 +428,7 @@ DonkeyJump.stateInit = function() {
 			this.lastSpeedX = 0;
 			this.speedX = 0;
 		}
+		this.stateUpdate();
 
 		if (this.lastY > this.y) {
 			if (this.y < 45776) {
@@ -360,7 +438,7 @@ DonkeyJump.stateInit = function() {
 				DonkeyJump.viewport.move(0, vy, true);
 			}
 
-		} else {
+		} else if (this.lastY < this.y) {
 			var stair = DonkeyJump.stairLayer.sprite;
 			for (var i = 0, ln = stair.length; i < ln; i++) {
 				var __stair = stair[i];
@@ -370,24 +448,43 @@ DonkeyJump.stateInit = function() {
 					};
 					if (__stair.prop) {
 						if (this.hitTest(__stair.prop)) {
-							__stair.prop.destory();
+							var prop = __stair.prop;
+							switch(prop.propsName) {
+								case "prop_spring01":
+									this.stateUpdate = this.superJump;
+									break;
+								case "props_balloon":
+									this.stateUpdate = this.balloon;
+									break;
+								case "props_gliding01":
+									this.stateUpdate = this.gliding;
+									break;
+								case "props_michael":
+									this.stateUpdate = this.MJ;
+									break;
+								case "props_super":
+									this.stateUpdate = this.superJump;
+									break;
+								case "props_ufo":
+									this.stateUpdate = this.UFO;
+									break;
+							}
+							prop.destory();
 							__stair.prop.parent.change();
+							break;
 						}
 					}
-					this.minTop = this.y;
-					this.lastSpeedY = 0;
-					this.speedY = -1;
-					this.acceY = 1 / 600;
-					this.anim.init();
+					this.__jump()
 					break;
 				}
 			}
-			if (this.y > this.minTop) {
-				this.speedY = 0;
-				this.acceY = 0;
-				DonkeyJump.game.stop();
-			}
-		}		this.parent.change();	}}
+		}
+		if (this.y > this.minTop) {
+			this.speedY = 0;
+			this.acceY = 0;
+			DonkeyJump.game.stop();
+		}
+		this.parent.change();	}}
 /**
  * 根据视口位置更新层状态
  */
@@ -403,120 +500,6 @@ DonkeyJump.layerChnage = function() {
 	}
 	if (y > 44800) {
 		this.floorLayer.change();
-	}
-}
-/**
- * @private
- * 普通跳跃
- */
-DonkeyJump.jump = function() {
-	if (DonkeyJump.donkey.animName != 'jump') {
-		this.setAnim('jump');
-		this.speedY = -1;
-		this.acceY = 1 / 600;
-		this.width = 128;
-		this.height = 128;
-	}
-}
-/**
- * 超人跳跃
- */
-DonkeyJump.superJump = function() {
-	if (this.__superJumpHeight > 1200) {
-		this.__superJumpHeight = 0;
-		this.stateUpdate = this.__jump;
-		return false;
-	} else {
-		this.__superJumpHeight += (this.lastY - this.y);
-	}
-
-	if (this.animName != 'superjump') {
-		Audio.play('ogg_super');
-		this.setAnim('superjump');
-		this.speedY = -0.8;
-		this.acceY = 0;
-	}
-}
-/**
- * MJ
- */
-DonkeyJump.MJ = function() {
-	if (this.__MJHeight > 1200) {
-		this.__MJHeight = 0;
-		this.stateUpdate = this.__jump;
-		return false;
-	} else {
-		this.__MJHeight += (this.lastY - this.y);
-	}
-
-	if (this.animName != 'MJ') {
-		this.setAnim('MJ');
-		this.speedY = -0.5;
-		this.acceY = 0;
-		this.flipX = false;
-	}
-}
-/**
- * 滑行
- */
-DonkeyJump.gliding = function() {
-	if (this.__glidingHeight > 1200) {
-		this.__glidingHeight = 0;
-		this.stateUpdate = this.__jump;
-		return false;
-	} else {
-		this.__glidingHeight += (this.lastY - this.y);
-	}
-
-	if (this.animName != 'plan') {
-		this.setAnim('plan');
-		this.speedY = -0.5;
-		this.acceY = 0;
-		this.flipX = false;
-		this.width = 256;
-		this.height = 256;
-	}
-}
-/**
- * UFO
- */
-DonkeyJump.UFO = function() {
-	if (this.__UFOHeight > 1200) {
-		this.__UFOHeight = 0;
-		this.stateUpdate = this.__jump;
-		return false;
-	} else {
-		this.__UFOHeight += (this.lastY - this.y);
-	}
-
-	if (this.animName != 'UFO') {
-		this.setAnim('UFO');
-		this.speedY = -0.5;
-		this.acceY = 0;
-		this.flipX = false;
-		this.width = 256;
-		this.height = 512;
-	}
-}
-/**
- * 气球
- */
-DonkeyJump.balloon = function() {
-	if (this.__balloonHeight > 1200) {
-		this.__balloonHeight = 0;
-		this.stateUpdate = this.__jump;
-		return false;
-	} else {
-		this.__balloonHeight += (this.lastY - this.y);
-	}
-
-	if (this.animName != 'qiqiu') {
-		this.setAnim('qiqiu');
-		this.speedY = -0.5;
-		this.acceY = 0;
-		this.flipX = false;
-		this.width = 128;
-		this.height = 128;
 	}
 }
 /**
@@ -544,31 +527,33 @@ DonkeyJump.ready = function(deltaTime) {
 		return false;
 	}
 
-	if (this.readyTime == 0) {
-		this.ui.beingReadyVisible(true);
-		Audio.play('ogg_321');
-	} else if (this.readyTime > 3000) {
-		this.ui.beingGoVisible(false);
+	if (DonkeyJump.readyTime == 0) {
+		GC.DOM.get("ready").className = "";
+		//Audio.play('ogg_321');
+	} else if (DonkeyJump.readyTime > 3000) {
+		GC.DOM.get("ready").className = "none";
+		GC.DOM.get("go").className = "none";
 		go = true;
-		Audio.play('ogg_go');
-		this.ui.btnPauseVisible(true);
-	} else if (this.readyTime > 2000) {
-		if (!this.isGo) {
-			this.ui.beingReadyVisible(false);
-			this.ui.beingGoVisible(true);
-			this.isGo = true;
-			Audio.play('ogg_321');
+		DonkeyJump.donkey.stateUpdate = DonkeyJump.donkey.superJump;
+		//Audio.play('ogg_go');
+		//this.ui.btnPauseVisible(true);
+	} else if (DonkeyJump.readyTime > 2000) {
+		if (!DonkeyJump.isGo) {
+			GC.DOM.get("ready").className = "none";
+			GC.DOM.get("go").className = "";
+			DonkeyJump.isGo = true;
+			//Audio.play('ogg_321');
 		}
-	} else if (this.readyTime > 1000) {
-		if (this.readyTime + deltaTime > 2000) {
-			Audio.play('ogg_321');
+	} else if (DonkeyJump.readyTime > 1000) {
+		if (DonkeyJump.readyTime + deltaTime > 2000) {
+			//Audio.play('ogg_321');
 		}
 	} else {
-		if (this.readyTime + deltaTime > 1000) {
-			Audio.play('ogg_321');
+		if (DonkeyJump.readyTime + deltaTime > 1000) {
+			//Audio.play('ogg_321');
 		}
 	}
-	this.readyTime += deltaTime;
+	DonkeyJump.readyTime += deltaTime;
 
 	return go;
 }

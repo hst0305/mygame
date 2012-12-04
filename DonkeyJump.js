@@ -24,6 +24,8 @@ var DonkeyJump = {
 	__glidingHeight : 0,
 	__UFOHeight : 0,
 	__balloonHeight : 0,
+	deadHeight : 1000,
+	isDead : false,
 	jumpState : GC.fn
 
 };
@@ -91,6 +93,7 @@ DonkeyJump.__createDonkey = function() {
 	};
 	donkey.jump = function() {
 		if (this.animName != 'jump') {
+			Audio.play('ogg_jump');
 			this.setAnim('jump');
 			this.width = 128;
 			this.height = 128;
@@ -102,6 +105,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 	};
 	donkey.__jump = function() {
+		Audio.play('ogg_jump');
 		this.setAnim('jump');
 		this.width = 128;
 		this.height = 128;
@@ -121,7 +125,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 
 		if (this.animName != 'superjump') {
-			//Audio.play('ogg_super');
+			Audio.play('ogg_super');
 			this.minTop = this.y;
 			this.setAnim('superjump');
 			this.lastSpeedY = 0;
@@ -140,6 +144,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 
 		if (this.animName != 'MJ') {
+			Audio.play('ogg_mj');
 			this.setAnim('MJ');
 			this.minTop = this.y;
 			this.speedY = -0.5;
@@ -157,6 +162,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 
 		if (this.animName != 'plan') {
+			Audio.play('ogg_gliding');
 			this.minTop = this.y;
 			this.setAnim('plan');
 			this.speedY = -0.5;
@@ -176,6 +182,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 
 		if (this.animName != 'UFO') {
+			Audio.play('ogg_ufo');
 			this.minTop = this.y;
 			this.setAnim('UFO');
 			this.speedY = -0.5;
@@ -195,6 +202,7 @@ DonkeyJump.__createDonkey = function() {
 		}
 
 		if (this.animName != 'qiqiu') {
+			Audio.play('ogg_balloon');
 			this.minTop = this.y;
 			this.setAnim('qiqiu');
 			this.speedY = -0.5;
@@ -203,11 +211,43 @@ DonkeyJump.__createDonkey = function() {
 			this.width = 128;
 			this.height = 128;
 		}
-	}
+	};
+	donkey.dead = function() {
+		if (this.animName != 'dead') {
+			Audio.pause('ogg_background');
+			Audio.play('ogg_die');
+			this.stateUpdate = this.__dead;
+			DonkeyJump.isDead = true;
+			this.setAnim('dead');
+			this.speedY = 0.15;
+			this.acceY = 1 / 1000;
+			this.flipX = false;
+		}
+	};
+	donkey.__dead = function() {
+		if (DonkeyJump.deadHeight > 0) {
+			var diffY = this.y - this.lastY, viewport = DonkeyJump.viewport;
+
+			if (this.deadViewportFixed) {
+				//
+			} else if (this.y >= viewport.y + 400) {
+				viewport.move(0, diffY * 2);
+			} else {
+				this.deadViewportFixed = true;
+			}
+
+			DonkeyJump.deadHeight -= diffY;
+		} else {
+			DonkeyJump.gameover();
+		}
+	};
 	DonkeyJump.donkeyLayer.putSprite(donkey);
 	DonkeyJump.donkey = donkey;
 }
-
+DonkeyJump.gameover = function() {
+	GC.DOM.get("dead").className="";
+	DonkeyJump.game.stop();
+}
 DonkeyJump.random = function(min, max) {
 	return Math.floor((max - min + 1) * Math.random()) + min;
 }
@@ -271,7 +311,7 @@ DonkeyJump.creatStair = function() {
 	if (5 == index) {
 		stair.prop = DonkeyJump.getProps();
 		stair.prop.x = stair.x + Math.abs(stair.prop.width - 128) / 2;
-		stair.prop.y = stair.y - stair.prop.height + 10;
+		stair.prop.y = stair.y - stair.prop.height + 20;
 	}
 	stair.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
@@ -337,10 +377,7 @@ DonkeyJump.init = function() {
 	DonkeyJump.__createLayers();
 	DonkeyJump.__createDonkey();
 	DonkeyJump.__createScene();
-	// DonkeyJump.donkey.anim = new Animation({
-	// image : GC.ImageManager.get("jump"),
-	// frames : getDonkeyFrames("jump")
-	// });	// DonkeyJump.donkey.setAnim("jump");	DonkeyJump.game = new Game({
+	DonkeyJump.game = new Game({
 		instance : "DonkeyJump.game",
 		FPS : 30
 	});
@@ -366,21 +403,17 @@ DonkeyJump.renderBg = function() {
  * 初始化状态
  */
 DonkeyJump.stateInit = function() {
+	Audio.play('ogg_background');
 	GC.DOM.get("startBut").onclick = function() {
-		// 移动视口到默认位置
 		DonkeyJump.viewport.move(DonkeyJump.viewportDefault[0], DonkeyJump.viewportDefault[1], true);
-		// 初始化驴子状态
 		DonkeyJump.donkey.x = 176;
 		DonkeyJump.donkey.y = DonkeyJump.viewportDefault[1] + 530;
-		// DonkeyJump.donkey.minTop = DonkeyJump.donkey.y;
-		// DonkeyJump.donkey.speedY = -1;
-		// DonkeyJump.donkey.acceY = 1 / 600;
-		DonkeyJump.game.start();
 		for (var i = 0; i < 10; i++) {
 			DonkeyJump.creatStair();
 		}
 		GC.DOM.get("gameCanvas").className = "";
 		GC.DOM.get("startBut").className = "none";
+		DonkeyJump.game.start();
 	};
 
 	// 停止游戏时
@@ -429,6 +462,10 @@ DonkeyJump.stateInit = function() {
 			this.speedX = 0;
 		}
 		this.stateUpdate();
+		if (DonkeyJump.isDead) {
+			this.parent.change();
+			return;
+		}
 
 		if (this.lastY > this.y) {
 			if (this.y < 45776) {
@@ -437,13 +474,13 @@ DonkeyJump.stateInit = function() {
 				DonkeyJump.renderBg();
 				DonkeyJump.viewport.move(0, vy, true);
 			}
-
 		} else if (this.lastY < this.y) {
 			var stair = DonkeyJump.stairLayer.sprite;
 			for (var i = 0, ln = stair.length; i < ln; i++) {
 				var __stair = stair[i];
 				if (this.hitTest(__stair)) {
 					if (__stair.stair_friable) {
+						Audio.play('ogg_step_broken');
 						__stair.anim.play();
 					};
 					if (__stair.prop) {
@@ -470,7 +507,7 @@ DonkeyJump.stateInit = function() {
 									break;
 							}
 							prop.destory();
-							__stair.prop.parent.change();
+							prop.parent.change();
 							break;
 						}
 					}
@@ -482,7 +519,7 @@ DonkeyJump.stateInit = function() {
 		if (this.y > this.minTop) {
 			this.speedY = 0;
 			this.acceY = 0;
-			DonkeyJump.game.stop();
+			this.dead();
 		}
 		this.parent.change();	}}
 /**
@@ -503,20 +540,6 @@ DonkeyJump.layerChnage = function() {
 	}
 }
 /**
- * 死亡
- */
-DonkeyJump.dead = function() {
-	Audio.pause('ogg_background');
-	Audio.play('ogg_die');
-	this.stateUpdate = this.__dead;
-	this.setAnim('dead');
-	this.speedX = 0;
-	this.speedY = 0.15;
-	this.acceX = 0;
-	this.acceY = 1 / 1000;
-	this.flipX = false;
-}
-/**
  * 预备状态
  * @return {Boolean} 返回预备状态是否完毕
  */
@@ -529,28 +552,28 @@ DonkeyJump.ready = function(deltaTime) {
 
 	if (DonkeyJump.readyTime == 0) {
 		GC.DOM.get("ready").className = "";
-		//Audio.play('ogg_321');
+		Audio.play('ogg_321');
 	} else if (DonkeyJump.readyTime > 3000) {
 		GC.DOM.get("ready").className = "none";
 		GC.DOM.get("go").className = "none";
 		go = true;
 		DonkeyJump.donkey.stateUpdate = DonkeyJump.donkey.superJump;
-		//Audio.play('ogg_go');
+		Audio.play('ogg_go');
 		//this.ui.btnPauseVisible(true);
 	} else if (DonkeyJump.readyTime > 2000) {
 		if (!DonkeyJump.isGo) {
 			GC.DOM.get("ready").className = "none";
 			GC.DOM.get("go").className = "";
 			DonkeyJump.isGo = true;
-			//Audio.play('ogg_321');
+			Audio.play('ogg_321');
 		}
 	} else if (DonkeyJump.readyTime > 1000) {
 		if (DonkeyJump.readyTime + deltaTime > 2000) {
-			//Audio.play('ogg_321');
+			Audio.play('ogg_321');
 		}
 	} else {
 		if (DonkeyJump.readyTime + deltaTime > 1000) {
-			//Audio.play('ogg_321');
+			Audio.play('ogg_321');
 		}
 	}
 	DonkeyJump.readyTime += deltaTime;
@@ -561,17 +584,8 @@ DonkeyJump.ready = function(deltaTime) {
  * 暂停游戏
  */
 DonkeyJump.pause = function() {
-	this.stop();
+	DonkeyJump.game.stop();
 	Audio.pauseAll();
 }
-/**
- * 游戏结束
- */
-DonkeyJump.gameover = function() {
-	var ui = this.ui;
 
-	this.stop();
-	ui.updateResult(null, this.score);
-	ui.toOver();
-}
 

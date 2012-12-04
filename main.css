@@ -35,7 +35,7 @@
 #gameCanvas canvas#canvas {
 	z-index:90;
 }
-#startBut span,#ready span, #go span{
+#startBut span,#ready span, #go span,#dead span{
 	display:none
 }
 #startBut {
@@ -68,4 +68,13 @@
 }
 div.fbg{
 	background:url("./images/background.jpg") no-repeat left top;
+}
+#dead{
+	position:absolute;
+	top:0;
+	left:0;
+	z-index: 101;
+	height:800px;
+	width:480px;
+	background:url("./images/background.jpg") no-repeat -480px top;
 }

@@ -119,7 +119,7 @@ Layer.prototype.render = function() {
 			cy = oSprite.y;
 			cw = oSprite.width;
 			ch = oSprite.height;
-			if (oSprite.visible && Math.abs((cx + cw / 2) - (vx + vw / 2)) < (cw + vw) / 2 && Math.abs((cy + ch / 2) - (vy + vh / 2)) < (ch + vh) / 2) {
+			// if (oSprite.visible && Math.abs((cx + cw / 2) - (vx + vw / 2)) < (cw + vw) / 2 && Math.abs((cy + ch / 2) - (vy + vh / 2)) < (ch + vh) / 2) {			if (oSprite.visible && Math.abs(cx - (vx + vw)) < (cw + vw) && Math.abs(cy - (vy + vh)) < (ch + vh)) {
 				oSprite.x = cx - vx;
 				oSprite.y = cy - vy;
 				this.__contextBuffer.save();

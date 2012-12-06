@@ -18,8 +18,6 @@
         list : {},
         /**
          * 播放音乐
-         * @param {Number} id
-         * @param {Boolean} resumePlay
          */
         play : function(id, resumePlay) {
             if(this.list[id] && !this.mute) {
@@ -31,7 +29,6 @@
         },
         /**
          * 暂停播放
-         * @param {Number} id
          */
         pause : function(id) {
             this.list[id].pause();

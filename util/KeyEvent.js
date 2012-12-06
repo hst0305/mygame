@@ -131,7 +131,6 @@
     }
     /**
      * 检查某个按键是否被按下
-     * @param {String} key
      */
     KeyEvent.check = function(key) {
         var code = KeyEvent.__keyCodeMap[key];

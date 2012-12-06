@@ -19,12 +19,10 @@ function Viewport(cfg) {
 	 */
 	this.height = 0;
 	/**
-	 * @private
 	 * 视口上一次x轴位置
 	 */
 	this.__lastX = 0;
 	/**
-	 * @private
 	 * 视口上一次y轴位置
 	 */
 	this.__lastY = 0;
@@ -33,9 +31,6 @@ function Viewport(cfg) {
 
 /**
  * 移动视口
- * @param {Number} x
- * @param {Number} y
- * @param {Boolean} absolute 绝对位置
  */
 Viewport.prototype.move = function(x, y, absolute) {
 	this.__lastX = this.x;

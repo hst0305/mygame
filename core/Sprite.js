@@ -6,21 +6,9 @@ function Sprite(cfg) {
 	 * 当前动画
 	 */
 	this.anim = null;
-	/**
-	 * 当前位置
-	 */
 	this.x = 0;
-	/**
-	 * 当前位置
-	 */
 	this.y = 0;
-	/**
-	 * 水平移动速度
-	 */
 	this.speedX = 0;
-	/**
-	 * 垂直移动速度
-	 */
 	this.speedY = 0;
 	/**
 	 * 水平加速度
@@ -31,22 +19,18 @@ function Sprite(cfg) {
 	 */
 	this.acceY = 0;
 	/**
-	 * read only
 	 * 上一水平坐标
 	 */
 	this.lastX = 0;
 	/**
-	 * read only
 	 * 上一垂直坐标
 	 */
 	this.lastY = 0;
 	/**
-	 * read only
 	 * 上一水平移动速度
 	 */
 	this.lastSpeedX = 0;
 	/**
-	 * read only
 	 * 上一垂直移动速度
 	 */
 	this.lastSpeedY = 0;
@@ -85,7 +69,6 @@ function Sprite(cfg) {
 }
 
 /**
- * @private
  * 获取精灵当前帧碰撞区域
  */
 Sprite.prototype.__getCollRect = function() {
@@ -94,7 +77,6 @@ Sprite.prototype.__getCollRect = function() {
 	}
 };
 /**
- * @private
  * 获取精灵当前帧碰撞区域
  */
 Sprite.prototype.init = function(oParent) {
@@ -107,7 +89,6 @@ Sprite.prototype.init = function(oParent) {
 };
 /**
  * 碰撞检测
- * @param {Sprite Object} sprite2
  */
 Sprite.prototype.hitTest = function(sprite2) {
 	var collRect1 = this.__getCollRect(), collRect2 = sprite2.__getCollRect(), coll1, coll2, result = false;
@@ -133,7 +114,6 @@ Sprite.prototype.hitTest = function(sprite2) {
 };
 /**
  * 更新精灵状态
- * @param {Number} deltaTime
  */
 Sprite.prototype._update = function(deltaTime) {
 	this.lastSpeedX = this.speedX;
@@ -151,41 +131,19 @@ Sprite.prototype._update = function(deltaTime) {
 Sprite.prototype.onInit=GC.fn;
 /**
  * 更新精灵状态
- * @param {Number} deltaTime
  */
 Sprite.prototype.update = function(deltaTime) {
-	//this.parent.change();
 };
 /**
  * 绘制精灵
- * @param {Context Object} context
  */
 Sprite.prototype.draw = function(context) {
 	var anim = this.anim;
 	if (anim && anim.currentFrame) {
 		var frame = anim.currentFrame;
 		context.drawImage(anim.image, frame.x, frame.y, this.width, this.height, 0, 0, this.width, this.height);
-		//GC.DOM.get("msg1").innerHTML="frame.x="+frame.x+" frame.y"+frame.y;
-		// test
-		/*
-		 if(frame.collRect) {
-		 var collRect = frame.collRect, coll;
-
-		 context.fillStyle = '#ff0000';
-		 context.globalAlpha = 0.5;
-
-		 for(var i = 0, len = collRect.length; i < len; i++) {
-		 coll = collRect[i];
-		 context.fillRect(coll[0], coll[1], coll[2], coll[3]);
-		 }
-		 }
-		 */
-
 	}
 };
-/**
- * 销毁精灵
- */
 Sprite.prototype.destory = function() {
 	if (this.anim) {
 		this.anim.destory();

@@ -7,12 +7,10 @@ function Game(cfg) {
 	 */
 	this.viewport = null;
 	/**
-	 * read only
 	 * 帧频
 	 */
 	this.FPS = 30;
 	/**
-	 * read only
 	 * 运行状态
 	 */
 	this.playing = false;
@@ -21,17 +19,14 @@ function Game(cfg) {
 	 */
 	this.layer = [];
 	/**
-	 * @private
 	 * 休眠时间
 	 */
 	this.__sleep = Math.floor(1000 / this.FPS);
 	/**
-	 * @private
 	 * 上一帧执行完毕的时间
 	 */
 	this.__lastTime = 0;
 	/**
-	 * @private
 	 * 定时器句柄
 	 */
 	this.__timeout = null;
@@ -55,8 +50,6 @@ Game.prototype.init = function() {
 };
 /**
  * 事件定义
- * onstart 开始游戏
- * onstop 停止游戏
  */
 Game.prototype.onstart = GC.fn;
 Game.prototype.onstop = GC.fn;
@@ -65,7 +58,6 @@ Game.prototype.onrender = GC.fn;
 
 /**
  * 设置帧频
- * @param {Number} fps
  */
 Game.prototype.setFPS = function(fps) {
 	this.FPS = fps;
@@ -83,7 +75,6 @@ Game.prototype.start = function() {
 	}
 };
 /**
- * @private
  * 运行时方法
  */
 Game.prototype.__run = function() {
@@ -91,18 +82,7 @@ Game.prototype.__run = function() {
 	this.__timeout = setTimeout(this.instance + ".__run()", this.__sleep);
 	now = new Date().getTime();
 	this.update(now - this.__lastTime);
-	//this.clear();
 	this.render();
-	/*
-	 if(undefined === window.tracetime) {
-	 window.tracetime = 0;
-	 } else if(window.tracetime > 1000) {
-	 window.tracetime = 0;
-	 console.log(new Date().getTime() - now);
-	 } else {
-	 window.tracetime += (now - this.__lastTime);
-	 }
-	 */
 	this.__lastTime = now;
 };
 /**
@@ -161,9 +141,6 @@ Game.prototype.clear = function() {
 		this.layer[i].clear();
 	}
 };
-/**
- * destory
- */
 Game.prototype.destory = function() {
 	this.stop();
 	for (var i = 0, ln = this.layer.length; i < ln; i++) {

@@ -1,18 +1,14 @@
 var GC = {};
 /**
  * 扩展和覆盖一个对象的属性
- * @param {Object} obj
- * @param {Object} newProperties
  */
 GC.extend = function(obj, newProperties) {
 	var key;
-
 	for (key in newProperties) {
 		if (newProperties.hasOwnProperty(key)) {
 			obj[key] = newProperties[key];
 		}
 	}
-
 	return obj;
 };
 GC.fn = new Function();
@@ -62,14 +58,9 @@ GC.DOM = {
  * 图片资源管理器
  */
 GC.ImageManager = {
-	/**
-	 * @private
-	 */
 	__loadList : {},
 	/**
 	 * 加载图片资源
-	 * @param {Array} images @format {id: '', src: ''}
-	 * @param {Function} statechange
 	 */
 	load : function(images, statechange, __index) {
 		var index = __index || 0;
@@ -85,7 +76,6 @@ GC.ImageManager = {
 	},
 	/**
 	 * 获取已加载的Image对象
-	 * @param {String} id
 	 */
 	get : function(id) {
 		return GC.ImageManager.__loadList[id];

@@ -21,27 +21,22 @@ function Layer(cfg) {
 	 */
 	this.sprite = [];
 	/**
-	 * @private
 	 * 分层画布对象
 	 */
 	this.__canvas = null;
 	/**
-	 * @private
 	 * 2d绘图上下文
 	 */
 	this.__context = null;
 	/**
-	 * @private
 	 * 分层画布对象缓存
 	 */
 	this.__canvasBuffer = null;
 	/**
-	 * @private
 	 * 2d绘图上下文缓存
 	 */
 	this.__contextBuffer = null;
 	/**
-	 * @private
 	 * 分层状态是否改变
 	 */
 	this.__change = true;
@@ -105,9 +100,6 @@ Layer.prototype.change = function() {
 	this.__change = true;
 };
 Layer.prototype.onrender = GC.fn;
-/**
- * render
- */
 Layer.prototype.render = function() {
 	if (this.__change) {
 		var aSprite = this.sprite, oSprite = null, viewport = this.viewport;
@@ -136,9 +128,6 @@ Layer.prototype.render = function() {
 		this.__change = false;
 	}
 };
-/**
- * update
- */
 Layer.prototype.update = function(deltaTime) {
 	var sprite = this.sprite, deltaTime = deltaTime;
 	for (var i = 0, ln = sprite.length; i < ln; i++) {
@@ -146,34 +135,24 @@ Layer.prototype.update = function(deltaTime) {
 	}
 };
 /**
- * @private
  * 变形处理
  */
 Layer.prototype.__transform = function(sprite) {
 	var __s = sprite;
-	//sY=sprite.y,sX=sprite.x,sW=sprite.width,sH=sprite.height;
 	this.__contextBuffer.translate(__s.x, __s.y);
-
-	// 透明度
 	if (__s.alpha < 1) {
 		this.__contextBuffer.globalAlpha = __s.alpha;
 	}
-
-	// 旋转
 	if (__s.rotation % 360 > 0) {
 		var offset = [__s.width / 2, __s.height / 2];
 		this.__contextBuffer.translate(offset[0], offset[1]);
 		this.__contextBuffer.rotate(__s.rotation % 360 / 180 * Math.PI);
 		this.__contextBuffer.translate(-offset[0], -offset[1]);
 	}
-
-	// 翻转
 	if (__s.flipX || __s.flipY) {
 		this.__contextBuffer.translate(__s.flipX ? __s.width : 0, __s.flipY ? __s.height : 0);
 		this.__contextBuffer.scale(__s.flipX ? -1 : 1, __s.flipY ? -1 : 1);
 	}
-
-	// 缩放
 	if (__s.scaleX != 1 || __s.scaleY != 1) {
 		this.__contextBuffer.scale(__s.scaleX, __s.scaleY);
 	}
@@ -181,7 +160,6 @@ Layer.prototype.__transform = function(sprite) {
 };
 /**
  * 添加精灵
- * @param {Context Object} sprite
  */
 Layer.prototype.putSprite = function(sprite) {
 	var index=this.sprite.length;
@@ -190,7 +168,6 @@ Layer.prototype.putSprite = function(sprite) {
 };
 /**
  * 删除精灵
- * @param {id int} sprite
  */
 Layer.prototype.reMoveSprite = function(id) {
 	var sprite=this.sprite;

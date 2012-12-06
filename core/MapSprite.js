@@ -11,9 +11,6 @@ function MapSprite(cfg) {
 	 * 重复绘制
 	 */
 	this.repeat = false;
-	/**
-	 * @private
-	 */
 	this.__pattern = null;
 	this.visible = true;
 	this.parent = null;
@@ -33,7 +30,6 @@ MapSprite.prototype._update = function(deltaTime) {
 };
 /**
  * 绘制图片
- * @param {Context Object} context
  */
 MapSprite.prototype.draw = function(context) {
 	// if (this.repeat) {
@@ -48,9 +44,6 @@ MapSprite.prototype.draw = function(context) {
 	context.drawImage(this.image, 0,0);
 	// }
 };
-/**
- * 销毁图像对象
- */
 MapSprite.prototype.destory = function() {
 	this.image = null;
 };

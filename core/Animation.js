@@ -25,22 +25,18 @@ function Animation(cfg) {
 	 */
 	this.speed = 1;
 	/**
-	 * @read only
 	 * 播放状态
 	 */
 	this.playing = false;
 	/**
-	 * @read only
 	 * 正在播放的帧索引(第一帧从0开始)
 	 */
 	this.currentFrameIndex = 0;
 	/**
-	 * @read only
 	 * 正在播放的帧对象
 	 */
 	this.currentFrame = null;
 	/**
-	 * @private
 	 * 当前帧已播放时间(ms)
 	 */
 	this.__framePlayedDuration = 0;
@@ -63,9 +59,7 @@ Animation.prototype.onstop = GC.fn;
 Animation.prototype.onend = GC.fn;
 
 /**
- * @private
  * 跳转到指定的帧
- * @param {Number} index
  */
 Animation.prototype.__gotoFrame = function(index) {
 	if (this.frames[index]) {
@@ -75,7 +69,6 @@ Animation.prototype.__gotoFrame = function(index) {
 	}
 };
 /**
- * @private
  * 跳转到下一帧
  */
 Animation.prototype.__nextFrame = function() {
@@ -113,7 +106,6 @@ Animation.prototype.stop = function() {
 };
 /**
  * 跳转到指定帧并开始播放
- * @param {Number} index
  */
 Animation.prototype.gotoAndPlay = function(index) {
 	this.__gotoFrame(index);
@@ -121,7 +113,6 @@ Animation.prototype.gotoAndPlay = function(index) {
 };
 /**
  * 跳转到指定帧并停止播放
- * @param {Number} index
  */
 Animation.prototype.gotoAndStop = function(index) {
 	this.__gotoFrame(index);
@@ -129,7 +120,6 @@ Animation.prototype.gotoAndStop = function(index) {
 };
 /**
  * 更新动画的状态
- * @param {Number} deltaTime
  */
 Animation.prototype.update = function(deltaTime) {
 	if (!this.playing) {
@@ -139,9 +129,6 @@ Animation.prototype.update = function(deltaTime) {
 		this.__framePlayedDuration += deltaTime * this.speed;
 	}
 };
-/**
- * 销毁对象
- */
 Animation.prototype.destory = function() {
 	this.parent.anim=null;
 	this.image = this.frames = this.currentFrame = this.onplay = this.onstop = this.onend = null;

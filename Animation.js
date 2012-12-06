@@ -143,5 +143,6 @@ Animation.prototype.update = function(deltaTime) {
  * 销毁对象
  */
 Animation.prototype.destory = function() {
+	this.parent.anim=null;
 	this.image = this.frames = this.currentFrame = this.onplay = this.onstop = this.onend = null;
 };

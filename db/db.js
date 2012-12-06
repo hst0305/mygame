@@ -1,60 +1,3 @@
-var GC = {};
-/**
- * 扩展和覆盖一个对象的属性
- * @param {Object} obj
- * @param {Object} newProperties
- */
-GC.extend = function(obj, newProperties) {
-	var key;
-
-	for (key in newProperties) {
-		if (newProperties.hasOwnProperty(key)) {
-			obj[key] = newProperties[key];
-		}
-	}
-
-	return obj;
-};
-GC.fn = new Function();
-GC.DOM = {
-	get : function(id) {
-		return document.getElementById(id);
-	}
-};
-/**
- * 图片资源管理器
- */
-GC.ImageManager = {
-	/**
-	 * @private
-	 */
-	__loadList : {},
-	/**
-	 * 加载图片资源
-	 * @param {Array} images @format {id: '', src: ''}
-	 * @param {Function} statechange
-	 */
-	load : function(images, statechange, __index) {
-		var index = __index || 0;
-		if (images[index]) {
-			var image = new Image(), oI = images[index];
-			image.src = oI.src;
-			image.onload = function() {
-				GC.ImageManager.__loadList[oI.id] = image;
-				GC.ImageManager.load(images, statechange, index + 1);
-			}
-		}
-		statechange(index);
-	},
-	/**
-	 * 获取已加载的Image对象
-	 * @param {String} id
-	 */
-	get : function(id) {
-		return GC.ImageManager.__loadList[id];
-	}
-};
-
 /**
  * 图像资源列表
  */
@@ -142,6 +85,9 @@ GC.getImageRes = function() {
 		src : "./images/props_ufo.png"
 	}];
 }
+/**
+ * 音频资源列表
+ */
 function getAudioRes() {
     return [{
         id : 'ogg_321',

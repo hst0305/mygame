@@ -13,7 +13,6 @@
 
         Stair.superclass.constructor.call(this, cfg);
     }
-    my.inherit(Stair, my.Sprite);
 
     /**
      * 初始化

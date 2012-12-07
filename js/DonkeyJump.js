@@ -24,6 +24,7 @@ var DonkeyJump = {
 	__glidingHeight : 0,
 	__UFOHeight : 0,
 	__balloonHeight : 0,
+	__powerJumpHeight:0,
 	deadHeight : 1000,
 	isDead : false,
 	jumpState : GC.fn
@@ -115,6 +116,27 @@ DonkeyJump.__createDonkey = function() {
 		this.acceY = 1 / 600;
 		this.anim.init(this);
 	};
+	donkey.powerJump = function() {
+		if (DonkeyJump.__powerJumpHeight > 1200) {
+			DonkeyJump.__powerJumpHeight = 0;
+			this.stateUpdate = this.jump;
+			return;
+		} else {
+			DonkeyJump.__powerJumpHeight += (this.lastY - this.y);
+		}
+
+		if (this.animName != 'run') {
+			Audio.play('ogg_super');
+			this.minTop = this.y;
+			this.setAnim('run');
+			this.lastSpeedY = 0;
+			this.speedY = -0.8;
+			this.acceY = 0;
+			this.anim.init(this);
+		}
+		
+		
+	};
 	donkey.superJump = function() {
 		if (DonkeyJump.__superJumpHeight > 1200) {
 			DonkeyJump.__superJumpHeight = 0;
@@ -167,7 +189,6 @@ DonkeyJump.__createDonkey = function() {
 			this.setAnim('plan');
 			this.speedY = -0.5;
 			this.acceY = 0;
-			this.flipX = false;
 			this.width = 256;
 			this.height = 256;
 		}
@@ -187,7 +208,6 @@ DonkeyJump.__createDonkey = function() {
 			this.setAnim('UFO');
 			this.speedY = -0.5;
 			this.acceY = 0;
-			this.flipX = false;
 			this.width = 256;
 			this.height = 512;
 		}
@@ -207,7 +227,6 @@ DonkeyJump.__createDonkey = function() {
 			this.setAnim('qiqiu');
 			this.speedY = -0.5;
 			this.acceY = 0;
-			this.flipX = false;
 			this.width = 128;
 			this.height = 128;
 		}
@@ -245,7 +264,7 @@ DonkeyJump.__createDonkey = function() {
 	DonkeyJump.donkey = donkey;
 }
 DonkeyJump.gameover = function() {
-	GC.DOM.get("dead").className="";
+	GC.DOM.get("dead").className = "";
 	DonkeyJump.game.stop();
 }
 DonkeyJump.random = function(min, max) {
@@ -288,12 +307,18 @@ DonkeyJump.getProps = function() {
 		frames : getPropFrames(propsName),
 		loop : false
 	});
+	prop.update = function() {
+		if (this.y > DonkeyJump.viewport.y + 800) {
+			this.destory();
+		} 
+		this.parent.change();
+	}
 	DonkeyJump.propsLayer.putSprite(prop);
 	prop.init(DonkeyJump.propsLayer);
 	prop.propsName = propsName;
 	return prop;
 }
-DonkeyJump.stairTop = DonkeyJump.viewportDefault[1] + 560;
+DonkeyJump.stairTop = DonkeyJump.viewportDefault[1] + 360;
 DonkeyJump.creatStair = function() {
 	var index = DonkeyJump.random(0, 6);
 	var stairName = DonkeyJump.getStairName[index];
@@ -311,7 +336,7 @@ DonkeyJump.creatStair = function() {
 	if (5 == index) {
 		stair.prop = DonkeyJump.getProps();
 		stair.prop.x = stair.x + Math.abs(stair.prop.width - 128) / 2;
-		stair.prop.y = stair.y - stair.prop.height + 20;
+		stair.prop.y = stair.y - stair.prop.height+10;
 	}
 	stair.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
@@ -391,14 +416,6 @@ DonkeyJump.init = function() {
 	DonkeyJump.game.init();
 	DonkeyJump.stateInit();
 }
-DonkeyJump.renderBg = function() {
-	DonkeyJump.skyLayer.change();
-	DonkeyJump.hillLayer.change();
-	DonkeyJump.hillNearLayer.change();
-	DonkeyJump.floorLayer.change();
-	DonkeyJump.stairLayer.change();
-	DonkeyJump.propsLayer.change();
-}
 /**
  * 初始化状态
  */
@@ -447,13 +464,17 @@ DonkeyJump.stateInit = function() {
 		}
 		if (DonkeyJump.keyDownLeft) {
 			if (this.direction != 'left') {
-				this.flipX = true;
+				if (this.animName == "jump") {
+					this.flipX = true;
+				}
 				this.direction = 'left';
 			}
 			this.speedX = -0.25;
 		} else if (DonkeyJump.keyDownRight) {
 			if (this.direction != 'right') {
-				this.flipX = false;
+				if (this.animName == "jump") {
+					this.flipX = false;
+				}
 				this.direction = 'right';
 			}
 			this.speedX = 0.25;
@@ -464,59 +485,74 @@ DonkeyJump.stateInit = function() {
 		this.stateUpdate();
 		if (DonkeyJump.isDead) {
 			this.parent.change();
+			this.speedX = 0;
 			return;
+		} else {
+			if (this.x < -64) {
+				this.x = -64;
+			}
+			if (this.x > 416) {
+				this.x = 416;
+			}
 		}
 
 		if (this.lastY > this.y) {
 			if (this.y < 45776) {
 				var vy = this.y - 336;
 				vy = vy > DonkeyJump.viewport.y ? DonkeyJump.viewport.y : vy;
-				DonkeyJump.renderBg();
+				DonkeyJump.layerChnage();
 				DonkeyJump.viewport.move(0, vy, true);
 			}
 		} else if (this.lastY < this.y) {
 			var stair = DonkeyJump.stairLayer.sprite;
 			for (var i = 0, ln = stair.length; i < ln; i++) {
 				var __stair = stair[i];
+				if (__stair.prop) {
+					if (this.hitTest(__stair.prop)) {
+						var prop = __stair.prop;
+						switch(prop.propsName) {
+							case "prop_spring01":
+								this.stateUpdate = this.superJump;
+								break;
+							case "props_balloon":
+								this.stateUpdate = this.balloon;
+								break;
+							case "props_gliding01":
+								this.stateUpdate = this.gliding;
+								break;
+							case "props_michael":
+								this.stateUpdate = this.MJ;
+								break;
+							case "props_super":
+								this.stateUpdate = this.superJump;
+								break;
+							case "props_ufo":
+								this.stateUpdate = this.UFO;
+								break;
+						}
+						if(prop.propsName=="prop_spring01"){
+							prop.anim.image=GC.ImageManager.get("prop_spring03");
+							prop.height=30;
+							prop.y-=16;
+							this.y-=16;
+						}else{
+							prop.destory();
+						}
+						prop.parent.change();
+						break;
+					}
+				}
 				if (this.hitTest(__stair)) {
 					if (__stair.stair_friable) {
 						Audio.play('ogg_step_broken');
 						__stair.anim.play();
 					};
-					if (__stair.prop) {
-						if (this.hitTest(__stair.prop)) {
-							var prop = __stair.prop;
-							switch(prop.propsName) {
-								case "prop_spring01":
-									this.stateUpdate = this.superJump;
-									break;
-								case "props_balloon":
-									this.stateUpdate = this.balloon;
-									break;
-								case "props_gliding01":
-									this.stateUpdate = this.gliding;
-									break;
-								case "props_michael":
-									this.stateUpdate = this.MJ;
-									break;
-								case "props_super":
-									this.stateUpdate = this.superJump;
-									break;
-								case "props_ufo":
-									this.stateUpdate = this.UFO;
-									break;
-							}
-							prop.destory();
-							prop.parent.change();
-							break;
-						}
-					}
 					this.__jump()
 					break;
 				}
 			}
 		}
-		if (this.y > this.minTop) {
+		if (this.y > DonkeyJump.viewport.y + 800) {
 			this.speedY = 0;
 			this.acceY = 0;
 			this.dead();
@@ -526,17 +562,17 @@ DonkeyJump.stateInit = function() {
  * 根据视口位置更新层状态
  */
 DonkeyJump.layerChnage = function() {
-	var y = this.viewport.y;
+	var y = DonkeyJump.viewport.y;
 
-	this.skyLayer.change();
+	DonkeyJump.skyLayer.change();
 	if (y > 36300) {
-		this.hillLayer.change();
+		DonkeyJump.hillLayer.change();
 	}
 	if (y > 4230) {
-		this.hillNearLayer.change();
+		DonkeyJump.hillNearLayer.change();
 	}
 	if (y > 44800) {
-		this.floorLayer.change();
+		DonkeyJump.floorLayer.change();
 	}
 }
 /**
@@ -587,5 +623,4 @@ DonkeyJump.pause = function() {
 	DonkeyJump.game.stop();
 	Audio.pauseAll();
 }
-
 

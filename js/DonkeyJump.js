@@ -25,6 +25,7 @@ var DonkeyJump = {
 	__UFOHeight : 0,
 	__balloonHeight : 0,
 	__powerJumpHeight:0,
+	point:0,
 	deadHeight : 1000,
 	isDead : false,
 	jumpState : GC.fn
@@ -265,7 +266,10 @@ DonkeyJump.__createDonkey = function() {
 }
 DonkeyJump.gameover = function() {
 	GC.DOM.get("dead").className = "";
-	DonkeyJump.game.stop();
+	GC.DOM.get("btn").className = "";
+	GC.DOM.get("point").className = "none";
+	GC.DOM.get("end_point").innerHTML = DonkeyJump.point;
+	DonkeyJump.game.destory();
 }
 DonkeyJump.random = function(min, max) {
 	return Math.floor((max - min + 1) * Math.random()) + min;
@@ -429,7 +433,8 @@ DonkeyJump.stateInit = function() {
 			DonkeyJump.creatStair();
 		}
 		GC.DOM.get("gameCanvas").className = "";
-		GC.DOM.get("startBut").className = "none";
+		GC.DOM.get("point").className = "";
+		GC.DOM.get("btn").className = "none";
 		DonkeyJump.game.start();
 	};
 
@@ -502,6 +507,7 @@ DonkeyJump.stateInit = function() {
 				vy = vy > DonkeyJump.viewport.y ? DonkeyJump.viewport.y : vy;
 				DonkeyJump.layerChnage();
 				DonkeyJump.viewport.move(0, vy, true);
+				DonkeyJump.changePoint(this.y);
 			}
 		} else if (this.lastY < this.y) {
 			var stair = DonkeyJump.stairLayer.sprite;
@@ -552,7 +558,7 @@ DonkeyJump.stateInit = function() {
 				}
 			}
 		}
-		if (this.y > DonkeyJump.viewport.y + 800) {
+		if (this.y > DonkeyJump.viewport.y + 710) {
 			this.speedY = 0;
 			this.acceY = 0;
 			this.dead();
@@ -563,8 +569,9 @@ DonkeyJump.stateInit = function() {
  */
 DonkeyJump.layerChnage = function() {
 	var y = DonkeyJump.viewport.y;
-
-	DonkeyJump.skyLayer.change();
+	if(y>0){
+		DonkeyJump.skyLayer.change();	
+	}
 	if (y > 36300) {
 		DonkeyJump.hillLayer.change();
 	}
@@ -576,8 +583,38 @@ DonkeyJump.layerChnage = function() {
 	}
 }
 /**
+ * 计算分数-以高度为准
+ */
+DonkeyJump.changePoint=function(DonkeyHeight){
+	DonkeyJump.point=DonkeyJump.viewportDefault[1]-DonkeyHeight+530;
+	if(DonkeyJump.point>50000){
+		DonkeyJump.LV=11;
+	}else if(DonkeyJump.point>40000){
+		DonkeyJump.LV=10;
+	}else if(DonkeyJump.point>30000){
+		DonkeyJump.LV=9;
+	}else if(DonkeyJump.point>20000){
+		DonkeyJump.LV=8;
+	}else if(DonkeyJump.point>25000){
+		DonkeyJump.LV=7;
+	}else if(DonkeyJump.point>20000){
+		DonkeyJump.LV=6;
+	}else if(DonkeyJump.point>15000){
+		DonkeyJump.LV=5;
+	}else if(DonkeyJump.point>10000){
+		DonkeyJump.LV=4;
+	}else if(DonkeyJump.point>5000){
+		DonkeyJump.LV=3;
+	}else if(DonkeyJump.point>3000){
+		DonkeyJump.LV=2;
+	}
+	var aPoint=Array.prototype.slice.call(""+DonkeyJump.point,0);
+	for(var i=0,ln=aPoint.length;i<ln;i++){
+		var id="num_"+(i+1)
+		GC.DOM.get(id).className="num_"+aPoint[ln-i-1];
+	}}
+/**
  * 预备状态
- * @return {Boolean} 返回预备状态是否完毕
  */
 DonkeyJump.ready = function(deltaTime) {
 	var go = false;

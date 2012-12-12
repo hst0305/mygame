@@ -11,9 +11,9 @@ function MapSprite(cfg) {
 	 * 重复绘制
 	 */
 	this.repeat = false;
-	this.__pattern = null;
 	this.visible = true;
 	this.parent = null;
+	this.__ID=null;
 	this.initialized = false;
 	GC.extend(this, cfg);
 }
@@ -41,9 +41,12 @@ MapSprite.prototype.draw = function(context) {
 	// } else {	// var image = new Image();
 	// image.src = "./images/sky.jpg";
 	//var context=GC.DOM.get("canvassky").getContext("2d");
-	context.drawImage(this.image, 0,0);
+	context.drawImage(this.image, 0, 0);
 	// }
 };
 MapSprite.prototype.destory = function() {
 	this.image = null;
+	this.parent.reMoveSprite(this.__ID);
+	this.parent = null;
+	delete this;
 };

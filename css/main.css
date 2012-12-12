@@ -1,80 +1,159 @@
-.none{
+.none {
 	display: none;
 }
 #gameCanvas {
-	width:480px;
-	height:800px;
-	border:5px solid #dcdcdc;
-	display:block;
-	margin:auto;
-	position:relative;
+	width: 480px;
+	height: 800px;
+	border: 5px solid #dcdcdc;
+	display: block;
+	margin: auto;
+	position: relative;
 }
 #gameCanvas canvas {
-	position:absolute;
-	top:0;
-	left:0;
+	position: absolute;
+	top: 0;
+	left: 0;
 }
 #gameCanvas canvas#canvassky {
-	z-index:10;
+	z-index: 10;
 }
 #gameCanvas canvas#canvashill {
-	z-index:20;
+	z-index: 20;
 }
 #gameCanvas canvas#canvashillnear {
-	z-index:30;
+	z-index: 30;
 }
 #gameCanvas canvas#canvasfloor {
-	z-index:40;
+	z-index: 40;
 }
 #gameCanvas canvas#canvasstair {
-	z-index:50;
+	z-index: 50;
 }
 #gameCanvas canvas#canvasprops {
-	z-index:60;
+	z-index: 60;
 }
 #gameCanvas canvas#canvas {
-	z-index:90;
-}
-#startBut span,#ready span, #go span,#dead span{
-	display:none
-}
-#startBut {
-	position:absolute;
-	left:33%;
-	top:70%;
-	width:170px;
-	height:108px;
-	cursor:pointer;
-	background:url("../images/icon.png") no-repeat -219px -1400px;
-	z-index: 100;
+	z-index: 90;
 }
 #ready {
-	position:absolute;
-	left:10%;
-	top:45%;
-	width:400px;
-	height:108px;
-	background:url("../images/icon.png") no-repeat left top;
+	position: absolute;
+	left: 10%;
+	top: 45%;
+	width: 400px;
+	height: 108px;
+	background: url("../images/icon.png") no-repeat left top;
 	z-index: 101;
 }
 #go {
-	position:absolute;
-	left:20%;
-	top:45%;
-	width:225px;
-	height:88px;
-	background:url("../images/icon.png") no-repeat left -136px;
+	position: absolute;
+	left: 20%;
+	top: 45%;
+	width: 225px;
+	height: 88px;
+	background: url("../images/icon.png") no-repeat left -136px;
 	z-index: 101;
 }
-div.fbg{
-	background:url("../images/background.jpg") no-repeat left top;
+div.fbg {
+	background: url("../images/background.jpg") no-repeat left top;
 }
-#dead{
-	position:absolute;
-	top:0;
-	left:0;
-	z-index: 101;
-	height:800px;
-	width:480px;
-	background:url("../images/background.jpg") no-repeat -480px top;
+#dead {
+	position: absolute;
+	top: 0;
+	left: 0;
+	z-index: 99;
+	height: 800px;
+	width: 480px;
+	background: url("../images/background.jpg") no-repeat -480px top;
 }
+#dead .point p {
+	padding: 0;
+	margin: 0;
+}
+#dead .point {
+	margin-top: 470px;
+	padding-left: 125px;
+	color: white;
+	font-size: 20px;
+	font-weight: bold;
+	line-height: 30px;
+}
+#btn {
+	margin-left: 25px;
+	position: absolute;
+	z-index: 100;
+	bottom: 15%;
+}
+#btn div {
+	width: 140px;
+	height: 114px;
+	cursor: pointer;
+	float: left;
+	margin-right: 5px;
+}
+#btn .ranking {
+	background: url("../images/icon.png") no-repeat -20px -1246px;
+}
+#btn .ranking:hover {
+	background-position: -20px -1133px;
+}
+#btn .reStart {
+	width: 156px;
+	background: url("../images/icon.png") no-repeat -17px -1515px;
+}
+#btn .reStart:hover {
+	background-position: -17px -1400px;
+}
+#btn .more {
+	background: url("../images/icon.png") no-repeat -20px -1787px;
+}
+#btn .more:hover {
+	background-position: -20px -1672px;
+}
+#point{
+	background: url("../images/icon.png") no-repeat left -748px;
+	height: 75px;
+	width:200px;
+	padding-left:90px;
+	position: absolute;
+	z-index: 100;
+}
+#point span{
+	width: 16px;
+	height:100%;
+	display: block;
+	float:left;
+	margin-right:3px;
+	background: url("../images/icon.png") no-repeat -8px -850px;
+}
+#point span.num_0{
+	background-position: -8px -850px;
+}
+#point span.num_1{
+	background-position: -26px -850px;
+}
+#point span.num_2{
+	background-position: -44px -850px;
+}
+#point span.num_3{
+	background-position: -62px -850px;
+}
+#point span.num_4{
+	background-position: -80px -850px;
+}
+#point span.num_5{
+	background-position: -98px -850px;
+}
+#point span.num_6{
+	background-position: -116px -850px;
+}
+#point span.num_7{
+	background-position: -134px -850px;
+}
+#point span.num_8{
+	background-position: -152px -850px;
+}
+#point span.num_9{
+	background-position: -170px -850px;
+}
+
+

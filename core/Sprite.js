@@ -150,4 +150,5 @@ Sprite.prototype.destory = function() {
 		this.anim = null;
 	}
 	this.parent.reMoveSprite(this.__ID);
+	delete this;
 };

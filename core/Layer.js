@@ -185,4 +185,5 @@ Layer.prototype.destory = function() {
 	}
 	this.sprite = null;
 	this.parent.reMoveLayer(this.__ID);
+	delete this;
 };

@@ -20,22 +20,45 @@
 					<canvas width="480" height="800" id="canvasstair"></canvas>
 					<canvas width="480" height="800" id="canvasprops"></canvas>
 					<canvas width="480" height="800" id="canvas"></canvas>
-					<div id="startBut"><span>开始游戏</span></div>
-					<div id="ready" class="none"><span>准备</span></div>
-					<div id="go" class="none"><span>开始</span></div>
+					<div id="ready" class="none">
+						<span class="none">准备</span>
+					</div>
+					<div id="go" class="none">
+						<span class="none">开始</span>
+					</div>
+					<div id="point" class="none">
+						<span id="num_6" class="num_0"></span>
+						<span id="num_5" class="num_0"></span>
+						<span id="num_4" class="num_0"></span>
+						<span id="num_3" class="num_0"></span>
+						<span id="num_2" class="num_0"></span>
+						<span id="num_1" class="num_0"></span>
+					</div>
 					<div id="dead" class="none">
 						<div class="point">
-							<p>游戏玩家</p>
-							<p>45000</p>
+							<p>
+								游戏玩家
+							</p>
+							<p id="end_point">
+								得分情况
+							</p>
 						</div>
-						<div class="btn">
-							<div class="ranking"><span>排行榜</span></div>
-							<div class="reStart"><span>开始游戏</span></div>
-							<div class="more"><span>更多</span></div>
+					</div>
+					<div id="btn" class="btn">
+						<div class="ranking">
+							<span class="none">排行榜</span>
+						</div>
+						<div id="startBut" class="reStart">
+							<span class="none">开始游戏</span>
+						</div>
+						<div class="more">
+							<span class="none">更多</span>
 						</div>
 					</div>
 				</div>
-				<div id="msg">游戏加载....</div>
+				<div id="msg">
+					游戏加载....
+				</div>
 			</div>
 		</div>
 		<script type="text/javascript" src="util/util.js"></script>
@@ -50,9 +73,9 @@
 		<script type="text/javascript" src="util/Audio.js"></script>
 		<script type="text/javascript" src="db/frames.js"></script>
 		<script type="text/javascript" src="db/db.js"></script>
-		
+
 		<script type="text/javascript" src="js/Main.js"></script>
 		<script type="text/javascript" src="js/Stair.js"></script>
 		<script type="text/javascript" src="js/DonkeyJump.js"></script>
-		
+
 </html>

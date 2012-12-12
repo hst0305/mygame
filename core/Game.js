@@ -147,5 +147,5 @@ Game.prototype.destory = function() {
 		this.layer[i].destory();
 	}
 	this.layer=null;
-
+	delete this;
 };

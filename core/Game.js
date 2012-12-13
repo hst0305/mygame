@@ -17,7 +17,7 @@ function Game(cfg) {
 	/**
 	 * 图层列表
 	 */
-	this.layer = [];
+	this.__layer = [];
 	/**
 	 * 休眠时间
 	 */
@@ -34,6 +34,7 @@ function Game(cfg) {
 	 * 初始化状态
 	 */
 	this.initialized = false;
+	this.destoryCache = [];
 	this.instance = "";
 	GC.extend(this, cfg);
 }
@@ -43,8 +44,8 @@ function Game(cfg) {
  */
 Game.prototype.init = function() {
 	this.setFPS(this.FPS);
-	for (var i = 0, ln = this.layer.length; i < ln; i++) {
-		this.layer[i].init(this);
+	for (var i = 0, ln = this.__layer.length; i < ln; i++) {
+		this.__layer[i].init(this);
 	}
 	this.initialized = true;
 };
@@ -78,20 +79,28 @@ Game.prototype.start = function() {
  * 运行时方法
  */
 Game.prototype.__run = function() {
-	var now = 0;
-	this.__timeout = setTimeout(this.instance + ".__run()", this.__sleep);
-	now = new Date().getTime();
-	this.update(now - this.__lastTime);
-	this.render();
-	this.__lastTime = now;
+	if (this.playing) {
+		var now = 0;
+		this.__timeout = setTimeout(this.instance + ".__run()", this.__sleep);
+		now = new Date().getTime();
+		this.update(now - this.__lastTime);
+		this.render();
+		this.__lastTime = now;
+	}
 };
 /**
  * 动画更新
  */
 Game.prototype.update = function(deltaTime) {
-	var deltaTime = deltaTime, layer = this.layer;
+	this.__destory();
+	var deltaTime = deltaTime, layer = this.__layer, __DCL = this.destoryCache.length;
 	for (var i = 0, ln = layer.length; i < ln; i++) {
-		layer[i].update(deltaTime);
+		if (layer[i]) {
+			layer[i].update(deltaTime);
+		}
+	}
+	if (__DCL != this.destoryCache.length) {
+		this.__destory();
 	}
 	this.onupdate();
 };
@@ -109,27 +118,20 @@ Game.prototype.stop = function() {
  * 添加图层
  */
 Game.prototype.putLayer = function(layer) {
-	var __ID=this.layer.length;
-	this.layer[__ID]=layer;
-	layer.__ID=__ID;
+	var __ID = this.__layer.length;
+	layer.__ID = __ID;
+	this.__layer.push(layer);
 };
-/**
- * 删除图层
- */
-Game.prototype.reMoveLayer = function(id) {
-	var layer=this.layer,ln=layer.length;;
-	layer.splice(id,1);
-	for(var i=0;i<ln;i++){
-		this.layer.__ID=i;
-	}
-};
+
 /**
  * 渲染游戏
  */
 Game.prototype.render = function() {
-	var layer = this.layer;
+	var layer = this.__layer;
 	for (var i = 0, ln = layer.length; i < ln; i++) {
-		layer[i].render();
+		if (layer[i]) {
+			layer[i].render();
+		}
 	}
 	this.onrender();
 };
@@ -141,11 +143,49 @@ Game.prototype.clear = function() {
 		this.layer[i].clear();
 	}
 };
-Game.prototype.destory = function() {
-	this.stop();
-	for (var i = 0, ln = this.layer.length; i < ln; i++) {
-		this.layer[i].destory();
+Game.prototype.putDestoryCache = function(id) {
+	this.destoryCache.push(id);
+};
+Game.prototype.getLayer = function() {
+	var layer = this.__layer, __s = [];
+	for (var i = 0, ln = layer.length; i < ln; i++) {
+		if (layer[i]) {
+			__s.push(layer[i]);
+		}
 	}
-	this.layer=null;
+	return __s;
+};
+Game.prototype.gameOver = function() {
+	this.stop();
+	this.onrender = function() {
+		this.destory();
+	}
+};
+Game.prototype.__destory = function() {
+	var __destoryCache = this.destoryCache, layer = this.__layer;
+	for (var i = 0, ln = __destoryCache.length; i < ln; i++) {
+		layer[__destoryCache[i]] = null;
+	}
+	if (__destoryCache.length > 50) {
+		//console.log("总个数：" + sprite.length);
+		for (var i = 0; i < layer.length; i++) {
+			if (!layer[i]) {
+				layer.splice(i, 1);
+				i--;
+			} else {
+				layer[i].__ID = i;
+			}
+		}
+		//console.log("删除的个数：" + this.destoryCache.length + "删除后的个数：" + sprite.length);
+		this.destoryCache = [];
+	}
+}
+Game.prototype.destory = function() {
+	var layer = this.getLayer();
+	for (var i = 0, ln = layer.length; i < ln; i++) {
+		layer[i].destory();
+	}
+	this.__layer = this.onstart = this.onstop = this.onupdate = this.onrender = this.viewport = this.destoryCache = null;
 	delete this;
+	//console.log("游戏结束");
 };

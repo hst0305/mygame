@@ -44,8 +44,8 @@ function Animation(cfg) {
 	 * 初始化状态
 	 */
 	this.initialized = false;
-	this.parent=null;
-	GC.extend(this,cfg);
+	this.parent = null;
+	GC.extend(this, cfg);
 }
 
 /**
@@ -85,9 +85,9 @@ Animation.prototype.__nextFrame = function() {
  * 初始化
  */
 Animation.prototype.init = function(oParent) {
-	this.parent=oParent;
+	this.parent = oParent;
 	this.__gotoFrame(0);
-	this.playing=true;
+	this.playing = true;
 	this.initialized = true;
 };
 /**
@@ -130,6 +130,6 @@ Animation.prototype.update = function(deltaTime) {
 	}
 };
 Animation.prototype.destory = function() {
-	this.parent.anim=null;
-	this.image = this.frames = this.currentFrame = this.onplay = this.onstop = this.onend = null;
+	this.image = this.frames = this.currentFrame = this.onplay = this.onstop = this.onend = this.parent = null;
+	delete this;
 };

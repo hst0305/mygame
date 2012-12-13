@@ -24,8 +24,8 @@ var DonkeyJump = {
 	__glidingHeight : 0,
 	__UFOHeight : 0,
 	__balloonHeight : 0,
-	__powerJumpHeight:0,
-	point:0,
+	__powerJumpHeight : 0,
+	point : 0,
 	deadHeight : 1000,
 	isDead : false,
 	jumpState : GC.fn
@@ -135,8 +135,7 @@ DonkeyJump.__createDonkey = function() {
 			this.acceY = 0;
 			this.anim.init(this);
 		}
-		
-		
+
 	};
 	donkey.superJump = function() {
 		if (DonkeyJump.__superJumpHeight > 1200) {
@@ -269,7 +268,7 @@ DonkeyJump.gameover = function() {
 	GC.DOM.get("btn").className = "";
 	GC.DOM.get("point").className = "none";
 	GC.DOM.get("end_point").innerHTML = DonkeyJump.point;
-	DonkeyJump.game.destory();
+	DonkeyJump.game.gameOver();
 }
 DonkeyJump.random = function(min, max) {
 	return Math.floor((max - min + 1) * Math.random()) + min;
@@ -314,8 +313,9 @@ DonkeyJump.getProps = function() {
 	prop.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
 			this.destory();
-		} 
-		this.parent.change();
+		}else{
+			this.parent.change();
+		}
 	}
 	DonkeyJump.propsLayer.putSprite(prop);
 	prop.init(DonkeyJump.propsLayer);
@@ -340,7 +340,7 @@ DonkeyJump.creatStair = function() {
 	if (5 == index) {
 		stair.prop = DonkeyJump.getProps();
 		stair.prop.x = stair.x + Math.abs(stair.prop.width - 128) / 2;
-		stair.prop.y = stair.y - stair.prop.height+10;
+		stair.prop.y = stair.y - stair.prop.height + 10;
 	}
 	stair.update = function() {
 		if (this.y > DonkeyJump.viewport.y + 800) {
@@ -350,17 +350,18 @@ DonkeyJump.creatStair = function() {
 			if ((this.x < 0 ) || (this.x > 350 )) {
 				this.speedX = -this.speedX;
 			}
+			this.parent.change();
+		}else{
+			this.parent.change();
 		}
-		this.parent.change();
 	}
 	DonkeyJump.stairLayer.putSprite(stair);
 	stair.init(DonkeyJump.stairLayer);
 	if (stairName == "stair_moveable") {
 		stair.speedX = DonkeyJump.random(10, 20) / 100;
-		if (DonkeyJump.random(1, 10) == 5) {
-			stair.speedX = -stair.speedX;
-		}
-		stair.stair_moveable = true;
+		// if (DonkeyJump.random(1, 10) == 5) {
+			// stair.speedX = -stair.speedX;
+		// }		stair.stair_moveable = true;
 	}
 	if (stairName == "stair_friable") {
 		stair.anim.loop = false;
@@ -510,7 +511,7 @@ DonkeyJump.stateInit = function() {
 				DonkeyJump.changePoint(this.y);
 			}
 		} else if (this.lastY < this.y) {
-			var stair = DonkeyJump.stairLayer.sprite;
+			var stair = DonkeyJump.stairLayer.getSprite();
 			for (var i = 0, ln = stair.length; i < ln; i++) {
 				var __stair = stair[i];
 				if (__stair.prop) {
@@ -536,15 +537,14 @@ DonkeyJump.stateInit = function() {
 								this.stateUpdate = this.UFO;
 								break;
 						}
-						if(prop.propsName=="prop_spring01"){
-							prop.anim.image=GC.ImageManager.get("prop_spring03");
-							prop.height=30;
-							prop.y-=16;
-							this.y-=16;
-						}else{
+						if (prop.propsName == "prop_spring01") {
+							prop.anim.image = GC.ImageManager.get("prop_spring03");
+							prop.height = 30;
+							prop.y -= 16;
+							this.y -= 16;
+						} else {
 							prop.destory();
 						}
-						prop.parent.change();
 						break;
 					}
 				}
@@ -569,8 +569,8 @@ DonkeyJump.stateInit = function() {
  */
 DonkeyJump.layerChnage = function() {
 	var y = DonkeyJump.viewport.y;
-	if(y>0){
-		DonkeyJump.skyLayer.change();	
+	if (y > 0) {
+		DonkeyJump.skyLayer.change();
 	}
 	if (y > 36300) {
 		DonkeyJump.hillLayer.change();
@@ -585,33 +585,33 @@ DonkeyJump.layerChnage = function() {
 /**
  * 计算分数-以高度为准
  */
-DonkeyJump.changePoint=function(DonkeyHeight){
-	DonkeyJump.point=DonkeyJump.viewportDefault[1]-DonkeyHeight+530;
-	if(DonkeyJump.point>50000){
-		DonkeyJump.LV=11;
-	}else if(DonkeyJump.point>40000){
-		DonkeyJump.LV=10;
-	}else if(DonkeyJump.point>30000){
-		DonkeyJump.LV=9;
-	}else if(DonkeyJump.point>20000){
-		DonkeyJump.LV=8;
-	}else if(DonkeyJump.point>25000){
-		DonkeyJump.LV=7;
-	}else if(DonkeyJump.point>20000){
-		DonkeyJump.LV=6;
-	}else if(DonkeyJump.point>15000){
-		DonkeyJump.LV=5;
-	}else if(DonkeyJump.point>10000){
-		DonkeyJump.LV=4;
-	}else if(DonkeyJump.point>5000){
-		DonkeyJump.LV=3;
-	}else if(DonkeyJump.point>3000){
-		DonkeyJump.LV=2;
+DonkeyJump.changePoint = function(DonkeyHeight) {
+	DonkeyJump.point = DonkeyJump.viewportDefault[1] - DonkeyHeight + 530;
+	if (DonkeyJump.point > 50000) {
+		DonkeyJump.LV = 11;
+	} else if (DonkeyJump.point > 40000) {
+		DonkeyJump.LV = 10;
+	} else if (DonkeyJump.point > 30000) {
+		DonkeyJump.LV = 9;
+	} else if (DonkeyJump.point > 20000) {
+		DonkeyJump.LV = 8;
+	} else if (DonkeyJump.point > 25000) {
+		DonkeyJump.LV = 7;
+	} else if (DonkeyJump.point > 20000) {
+		DonkeyJump.LV = 6;
+	} else if (DonkeyJump.point > 15000) {
+		DonkeyJump.LV = 5;
+	} else if (DonkeyJump.point > 10000) {
+		DonkeyJump.LV = 4;
+	} else if (DonkeyJump.point > 5000) {
+		DonkeyJump.LV = 3;
+	} else if (DonkeyJump.point > 3000) {
+		DonkeyJump.LV = 2;
 	}
-	var aPoint=Array.prototype.slice.call(""+DonkeyJump.point,0);
-	for(var i=0,ln=aPoint.length;i<ln;i++){
-		var id="num_"+(i+1)
-		GC.DOM.get(id).className="num_"+aPoint[ln-i-1];
+	var aPoint = Array.prototype.slice.call("" + DonkeyJump.point, 0);
+	for (var i = 0, ln = aPoint.length; i < ln; i++) {
+		var id = "num_" + (i + 1)
+		GC.DOM.get(id).className = "num_" + aPoint[ln - i - 1];
 	}}
 /**
  * 预备状态

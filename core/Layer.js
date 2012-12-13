@@ -19,7 +19,7 @@ function Layer(cfg) {
 	/**
 	 * 动画精灵列表
 	 */
-	this.sprite = [];
+	this.__sprite = [];
 	/**
 	 * 分层画布对象
 	 */
@@ -40,12 +40,13 @@ function Layer(cfg) {
 	 * 分层状态是否改变
 	 */
 	this.__change = true;
-	this.__ID=null;
+	this.__ID = null;
 	/**
 	 * 初始化状态
 	 */
 	this.initialized = false;
 	this.parent = null;
+	this.destoryCache = [];
 	GC.extend(this, cfg);
 }
 
@@ -55,7 +56,7 @@ function Layer(cfg) {
 Layer.prototype.init = function(oParent) {
 	this.parent = oParent;
 	this.setCanvas(this.canvas);
-	var sprite = this.sprite;
+	var sprite = this.__sprite;
 	for (var i = 0, ln = sprite.length; i < ln; i++) {
 		var item = sprite[i];
 		item.x /= this.distance;
@@ -102,7 +103,7 @@ Layer.prototype.change = function() {
 Layer.prototype.onrender = GC.fn;
 Layer.prototype.render = function() {
 	if (this.__change) {
-		var aSprite = this.sprite, oSprite = null, viewport = this.viewport;
+		var aSprite = this.getSprite(), oSprite = null, viewport = this.viewport;
 		var vx = viewport.x / this.distance, vy = viewport.y / this.distance, vw = viewport.width, vh = viewport.height;
 		var cx = cy = cw = ch = 0;
 		for (var i = 0, ln = aSprite.length; i < ln; i++) {
@@ -111,11 +112,13 @@ Layer.prototype.render = function() {
 			cy = oSprite.y;
 			cw = oSprite.width;
 			ch = oSprite.height;
-			// if (oSprite.visible && Math.abs((cx + cw / 2) - (vx + vw / 2)) < (cw + vw) / 2 && Math.abs((cy + ch / 2) - (vy + vh / 2)) < (ch + vh) / 2) {			if (oSprite.visible && Math.abs(cx - (vx + vw)) < (cw + vw) && Math.abs(cy - (vy + vh)) < (ch + vh)) {
+			// if (oSprite.visible && Math.abs((cx + cw / 2) - (vx + vw / 2)) < (cw + vw) / 2 && Math.abs((cy + ch / 2) - (vy + vh / 2)) < (ch + vh) / 2) {
+			if (oSprite.visible && Math.abs(cx - (vx + vw)) < (cw + vw) && Math.abs(cy - (vy + vh)) < (ch + vh)) {
 				oSprite.x = cx - vx;
 				oSprite.y = cy - vy;
 				this.__contextBuffer.save();
-				this.__transform(oSprite);				oSprite.draw(this.__contextBuffer);
+				this.__transform(oSprite);
+				oSprite.draw(this.__contextBuffer);
 				this.__contextBuffer.restore();
 				oSprite.x = cx;
 				oSprite.y = cy;
@@ -129,11 +132,36 @@ Layer.prototype.render = function() {
 	}
 };
 Layer.prototype.update = function(deltaTime) {
-	var sprite = this.sprite, deltaTime = deltaTime;
+	this.__destory();
+	var sprite = this.__sprite, deltaTime = deltaTime, __DCL = this.destoryCache.length;
 	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		sprite[i]._update(deltaTime);
+		if (sprite[i]) {
+			sprite[i]._update(deltaTime);
+		}
+	}
+	if (__DCL != this.destoryCache.length) {
+		this.__destory();
 	}
 };
+Layer.prototype.__destory = function() {
+	var __destoryCache = this.destoryCache, sprite = this.__sprite;
+	for (var i = 0, ln = __destoryCache.length; i < ln; i++) {
+		sprite[__destoryCache[i]] = null;
+	}
+	if (__destoryCache.length > 50) {
+		//console.log("总个数：" + sprite.length);
+		for (var i = 0; i < sprite.length; i++) {
+			if (!sprite[i]) {
+				sprite.splice(i, 1);
+				i--;
+			} else {
+				sprite[i].__ID = i;
+			}
+		}
+		//console.log("删除的个数：" + this.destoryCache.length + "删除后的个数：" + sprite.length);
+		this.destoryCache = [];
+	}
+}
 /**
  * 变形处理
  */
@@ -162,28 +190,47 @@ Layer.prototype.__transform = function(sprite) {
  * 添加精灵
  */
 Layer.prototype.putSprite = function(sprite) {
-	var index=this.sprite.length;
-	sprite.__ID=index;
-	this.sprite.push(sprite);
+	var index = this.__sprite.length;
+	sprite.__ID = index;
+	this.__sprite.push(sprite);
 };
 /**
  * 删除精灵
  */
 Layer.prototype.reMoveSprite = function(id) {
-	var sprite=this.sprite;
-	sprite.splice(id,1);
-	for(var i=0,ln=sprite.length;i<ln;i++){
-		sprite[i].__ID=i;
-	}};
+	var sprite = this.__sprite;
+	sprite.splice(id, 1);
+	for (var i = 0, ln = sprite.length; i < ln; i++) {
+		sprite[i].__ID = i;
+	}};
+/**
+ * 获取精灵
+ */
+Layer.prototype.getSprite = function() {
+	var sprite = this.__sprite, __s = [];
+	for (var i = 0, ln = sprite.length; i < ln; i++) {
+		if (sprite[i]) {
+			__s.push(sprite[i]);
+		}
+	}
+	return __s;
+};
+
+/**
+ * destory
+ */
+Layer.prototype.putDestoryCache = function(id) {
+	this.destoryCache.push(id);
+};
 /**
  * destory
  */
 Layer.prototype.destory = function() {
-	this.viewport = this.__canvas = this.__context = this.canvasBuffer = this.__contextBuffer = null;
-	for (var i = 0, ln = this.sprite.length; i < ln; i++) {
-		this.sprite[i].destory();
+	var sprite = this.getSprite();
+	for (var i = 0, ln = sprite.length; i < ln; i++) {
+		sprite[i].destory();
 	}
-	this.sprite = null;
-	this.parent.reMoveLayer(this.__ID);
+	this.parent.putDestoryCache(this.__ID);
+	this.viewport = this.parent = this.__canvas = this.__context = this.__canvasBuffer = this.__contextBuffer = this.onrender = this.__sprite = this.destoryCache = null;
 	delete this;
 };

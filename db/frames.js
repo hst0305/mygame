@@ -668,9 +668,6 @@ var getDonkeyFrames = (function() {
         }],
     }
 
-    /**
-     * @param {String} animName
-     */
     return function(animName) {
         return frames[animName];
     }
@@ -750,9 +747,6 @@ var getStairFrames = (function() {
         }]
     }
 
-    /**
-     * @param {String} animName
-     */
     return function(animName) {
         return frames[animName];
     }
@@ -799,9 +793,6 @@ var getPropFrames = (function() {
         }]
     }
 
-    /**
-     * @param {String} animName
-     */
     return function(animName) {
         return frames[animName];
     }
@@ -811,7 +802,6 @@ var getPropFrames = (function() {
  * 效果动画帧
  */
 var getEffectFrames = (function() {
-
     var frames = {
         cloud : [{
             x : 0,
@@ -831,10 +821,6 @@ var getEffectFrames = (function() {
             duration : 30
         }]
     }
-
-    /**
-     * @param {String} animName
-     */
     return function(animName) {
         return frames[animName];
     }

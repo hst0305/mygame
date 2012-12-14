@@ -83,6 +83,9 @@ GC.getImageRes = function() {
 	}, {
 		id : "props_ufo",
 		src : "./images/props_ufo.png"
+	}, {
+		id : "cloud",
+		src : "./images/cloud.png"
 	}];
 }
 /**

@@ -11,6 +11,13 @@
 	<body>
 		<div id="donkeyJump">
 			<!-- 游戏主体 -->
+			<div class="WF">
+				<h3>游戏玩法</h3>
+				<p>1、当游戏开后，驴子会自动的往上跳。</p>
+				<p>2、你只要用键盘的<span class="red fb">左右键</span>来控制驴子的左右移动即可。</p>
+				<p>3、当驴子掉下来的时候需要踩住云才能在往上跳。</p>
+				<p>4、你只能往前冲，没有回头路！</p>
+			</div>
 			<div id="gameBody" class="block">
 				<div id="gameCanvas" class="fbg">
 					<canvas width="480" height="800" id="canvassky"></canvas>
@@ -20,6 +27,12 @@
 					<canvas width="480" height="800" id="canvasstair"></canvas>
 					<canvas width="480" height="800" id="canvasprops"></canvas>
 					<canvas width="480" height="800" id="canvas"></canvas>
+					<canvas width="480" height="800" id="canvaseffct">
+						<div class="ont_sp_canvas">
+							<p>您使用的浏览器不支持HTML5技术，请使用Google Chrome或Mozilla Firefox。</p>
+							<p>您也可以使用其它扶持HTML5的浏览器。建议使用Google Chrome浏览器！</p>
+						</div>
+					</canvas>
 					<div id="ready" class="none">
 						<span class="none">准备</span>
 					</div>
@@ -44,20 +57,34 @@
 							</p>
 						</div>
 					</div>
-					<div id="btn" class="btn">
+					<div id="btn" class="btn none">
 						<div class="ranking">
 							<span class="none">排行榜</span>
 						</div>
 						<div id="startBut" class="reStart">
 							<span class="none">开始游戏</span>
 						</div>
+						<div id="reStartBut" class="none">
+							<span class="none">重新开始</span>
+						</div>
 						<div class="more">
 							<span class="none">更多</span>
 						</div>
 					</div>
-				</div>
-				<div id="msg">
-					游戏加载....
+					<div id="music" class="music_on none">
+						<span class="none">音乐开关</span>
+					</div>
+					<div id="game_stop" class="none">
+						<span class="none">游戏暂停</span>
+					</div>
+					<div id="game_start" class="none">
+						<div id="go_on">
+							<span class="none">游戏开始</span>
+						</div>
+					</div>
+					<div id="msg" class="loadState">
+						游戏加载....
+					</div>
 				</div>
 			</div>
 		</div>

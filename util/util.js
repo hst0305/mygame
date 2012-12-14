@@ -38,12 +38,12 @@ GC.DOM = {
 		return false;
 	},
 	addClass : function(element, className) {
-		if (!MY.Dom.hasClass(element, className)) {
+		if (!this.hasClass(element, className)) {
 			element.className += ' ' + className;
 		}
 	},
 	removeClass : function(element, className) {
-		if (MY.Dom.hasClass(element, className)) {
+		if (this.hasClass(element, className)) {
 			var names = element.className.split(/\s+/), newClassName = [];
 			for (var i = 0; i < names.length; i++) {
 				if (names[i] != className) {

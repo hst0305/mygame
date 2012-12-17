@@ -49,7 +49,7 @@ small, small em {
 }
 @font-face {
 	font-family: 'myfont1';
-	src: url('http://imgcache.meishi.qq.com/misc/images/OCR-B 10 BT.ttf');
+	src: url('./images/OCR-B 10 BT.ttf');
 }
 #footBtn a, .err_sub, .kkyl_frm input[type=submit], .popup .ok, #pwr_footFrm input[type=submit], #poBtn {
 	display: block;
@@ -297,7 +297,7 @@ small, small em {
 	padding-right: 40px;
 	display: inline-block;
 	text-align: right;
-	background: url('http://imgcache.meishi.qq.com/misc/images/icons.png') no-repeat 170px -441px;
+	background: url('./images/icons.png') no-repeat 170px -441px;
 	-webkit-background-size: 25px 500px;
 	background-size: 25px;
 }
@@ -305,15 +305,15 @@ small, small em {
 	position: relative;
 }
 #card_ctn .bk1 {
-	height: 155px;
-	background: #4b5359 url('http://imgcache.meishi.qq.com/misc/images/wei_shop_bk2.jpg') repeat-x 0 0;
+	height: 45px;
+	background: #4b5359 url('./images/wei_shop_bk1.jpg') repeat-x 0 0;
 }
 #card_ctn .cont {
 	min-height: 170px;
 	width: 320px;
 	margin: -155px auto 0 auto;
 	padding-top: 28px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_shop_bk1.jpg') no-repeat 0 0;
+	background: url('./images/wei_shop_bk1.jpg') no-repeat 0 0;
 }
 #card_ctn .card {
 	width: 236px;
@@ -381,7 +381,7 @@ small, small em {
 	margin: 0 auto;
 	height: 44px;
 	padding-right: 27px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/icons.png') no-repeat right -203px;
+	background: url('./images/icons.png') no-repeat right -203px;
 	-webkit-background-size: 25px 500px;
 	background-size: 25px;
 }
@@ -431,10 +431,10 @@ small, small em {
 	background-size: 13px 13px;
 }
 .fg .info .addr {
-	background-image: url('http://imgcache.meishi.qq.com/misc/images/icon_addr.png');
+	background-image: url('./images/icon_addr.png');
 }
 .fg .info .tel {
-	background-image: url('http://imgcache.meishi.qq.com/misc/images/icon_tel.png');
+	background-image: url('./images/icon_tel.png');
 }
 .fg .keywords {
 	height: 25px;
@@ -462,12 +462,12 @@ small, small em {
 	overflow: hidden;
 	white-space: nowrap;
 }
-.fc .cname {
-	width: 222px;
-	height: 16px;
-	margin: 0 0 89px 0;
-	line-height: 16px;
-	font-size: 10px;
+.cname {
+	line-height: 46px;
+	font-size: 20px;
+	font-family: 'Helvetica Neue', sans-serif;
+	font-weight: bolder;
+	color: #e46084;
 }
 .fc .t {
 	width: 106px;
@@ -502,7 +502,7 @@ small, small em {
 	line-height: 36px;
 	color: #666;
 	padding-left: 18px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_card.png') no-repeat -289px -124px;
+	background: url('./images/wei_card.png') no-repeat -289px -124px;
 	border-top: 1px dashed #fff;
 	border-bottom: 1px dashed #bbb;
 }
@@ -545,7 +545,7 @@ small, small em {
 	text-indent: 20px;
 	border-top: 1px solid #fff;
 	border-bottom: 1px solid #e8e8e8;
-	background: #f6f6f6 url('http://imgcache.meishi.qq.com/misc/images/icons.png') no-repeat right -200px;
+	background: #f6f6f6 url('./images/icons.png') no-repeat right -200px;
 	-webkit-background-size: 25px 500px;
 	background-size: 25px;
 }
@@ -642,7 +642,7 @@ small, small em {
 	height: 40px;
 	border-bottom: 1px solid #ede7db;
 	padding-left: 10px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/icons.png') no-repeat right -255px;
+	background: url('./images/icons.png') no-repeat right -255px;
 	-webkit-background-size: 25px 500px;
 	background-size: 25px;
 }
@@ -660,13 +660,13 @@ small, small em {
 	display: block;
 }
 body#powerPage {
-	background: url('http://imgcache.meishi.qq.com/misc/images/power_bk1.jpg') repeat 0 0;
+	background: url('./images/power_bk1.jpg') repeat 0 0;
 	padding-top: 22px;
 	-webkit-background-size: 75px 75px;
 	background-size: 75px 75px;
 }
 body#powerPage.s1 {
-	background-image: url('http://imgcache.meishi.qq.com/misc/images/power_bk3.jpg');
+	background-image: url('./images/power_bk3.jpg');
 	padding-top: 45px;
 	-webkit-transition: padding-top .3s ease .5s;
 	-moz-transition: padding-top .3s ease .5s;
@@ -724,7 +724,7 @@ body#powerPage.s1 {
 	border: dashed #ede3c8;
 	border-width: 2px 0 2px 0;
 	margin: 4px 0;
-	background: #e5ddb6 url('http://imgcache.meishi.qq.com/misc/images/power_bk2_1.jpg') repeat 0 0;
+	background: #e5ddb6 url('./images/power_bk2_1.jpg') repeat 0 0;
 	-webkit-background-size: 50px 100px;
 	background-size: 50px 100px;
 	-webkit-background-clip: content;
@@ -737,7 +737,7 @@ body#powerPage.s1 {
 	width: 245px;
 	min-height: 105px;
 	text-align: left;
-	background: url('http://imgcache.meishi.qq.com/misc/images/circle_bk.png') no-repeat 7px 22px;
+	background: url('./images/circle_bk.png') no-repeat 7px 22px;
 	-webkit-background-size: 74px 74px;
 	background-size: 74px 74px;
 }
@@ -794,7 +794,7 @@ body#powerPage.s1 {
 .use_note li {
 	line-height: 21px;
 	padding: 0 0 4px 10px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/dot1.png') no-repeat 0 6px;
+	background: url('./images/dot1.png') no-repeat 0 6px;
 	-webkit-background-size: 6px 6px;
 	background-size: 6px 6px;
 }
@@ -819,7 +819,7 @@ body#powerPage.s1 {
 	height: 105px;
 	margin-bottom: 4px;
 	border-bottom: 2px dashed #ede3c8;
-	background: #dad4b0 url('http://imgcache.meishi.qq.com/misc/images/power_bk4.jpg') repeat-x 0 0;
+	background: #dad4b0 url('./images/power_bk4.jpg') repeat-x 0 0;
 	-webkit-background-size: 50px 111px;
 	background-size: 50px 111px;
 	-webkit-background-clip: content;
@@ -856,10 +856,10 @@ body#powerPage.s1 {
 	background-size: 15px 65px;
 }
 .ucodediv .cfl {
-	background-image: url('http://imgcache.meishi.qq.com/misc/images/power_bk5_1.png');
+	background-image: url('./images/power_bk5_1.png');
 }
 .ucodediv .cfr {
-	background-image: url('http://imgcache.meishi.qq.com/misc/images/power_bk5_2.png');
+	background-image: url('./images/power_bk5_2.png');
 }
 .ucodediv .cfm {
 	min-width: 120px;
@@ -868,7 +868,7 @@ body#powerPage.s1 {
 	line-height: 21px;
 	padding-top: 30px;
 	height: 35px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/power_bk5_3.png') repeat-x 0 0;
+	background: url('./images/power_bk5_3.png') repeat-x 0 0;
 	-webkit-background-size: 100% 65px;
 	background-size: 100% 65px;
 }
@@ -914,7 +914,7 @@ body#powerPage.s1 {
 }
 .dzh_hd {
 	height: 99px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_dzh_bk1_l.jpg') no-repeat left top, url('http://imgcache.meishi.qq.com/misc/images/wei_dzh_bk1_r.jpg') no-repeat right top, url('http://imgcache.meishi.qq.com/misc/images/wei_dzh_bk1.jpg') repeat-x center top;
+	background: url('./images/wei_dzh_bk1_l.jpg') no-repeat left top, url('./images/wei_dzh_bk1_r.jpg') no-repeat right top, url('./images/wei_dzh_bk1.jpg') repeat-x center top;
 }
 .dzh_hd h1 {
 	color: #4b3c22;
@@ -968,7 +968,7 @@ body#powerPage.s1 {
 	color: #373737;
 	padding-left: 17px;
 	margin-left: 11px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/chg.png') no-repeat 0 14px;
+	background: url('./images/chg.png') no-repeat 0 14px;
 	-webkit-background-size: 15px 8px;
 	background-size: 15px 8px;
 }
@@ -980,14 +980,14 @@ body#powerPage.s1 {
 	line-height: 16px;
 	padding-left: 16px;
 	margin: 12px 10px 0 0;
-	background: url('http://imgcache.meishi.qq.com/misc/images/totop.png') no-repeat 0 1px;
+	background: url('./images/totop.png') no-repeat 0 1px;
 	-webkit-background-size: 12px 12.5px;
 	background-size: 12px 12.5px;
 }
 .dzh_bdy h1 {
 	height: 20px;
 	line-height: 21px;
-	background: #ac8c67 url('http://imgcache.meishi.qq.com/misc/images/wei_dzh_bk2.png') repeat-x center top;
+	background: #ac8c67 url('./images/wei_dzh_bk2.png') repeat-x center top;
 	color: #fff;
 	overflow: hidden;
 	text-align: left;
@@ -1223,7 +1223,7 @@ body#mcityPage {
 	display: inline-block;
 	float: right;
 	margin: 0 9px 2px 9px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/bk_mem.jpg') no-repeat 0 0;
+	background: url('./images/bk_mem.jpg') no-repeat 0 0;
 	-webkit-background-size: 54px 54px;
 	background-size: 54px 54px;
 	text-align: left;
@@ -1349,7 +1349,7 @@ body#kkylPage {
 	top: -6px;
 	right: 63px;
 	margin-bottom: 10px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_card.png') no-repeat 0 -100px;
+	background: url('./images/wei_card.png') no-repeat 0 -100px;
 }
 .kkyl_st article {
 	overflow: hidden;
@@ -1371,7 +1371,7 @@ body#kkylPage {
 	word-wrap: break-word;
 	line-height: 22px;
 	padding-left: 11px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_card.png') no-repeat -296px -130px;
+	background: url('./images/wei_card.png') no-repeat -296px -130px;
 }
 .kkyl_st article li span {
 	display: inline-block;
@@ -1386,14 +1386,14 @@ body#kkylPage {
 	height: 30px;
 	text-indent: -9999px;
 	margin: 10px 0 0 15px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_card.png') no-repeat -100px 0;
+	background: url('./images/wei_card.png') no-repeat -100px 0;
 }
 #errPage span {
 	display: inline-block;
 	width: 100px;
 	height: 115px;
 	margin-top: -10px;
-	background: url('http://imgcache.meishi.qq.com/misc/images/wei_card.png') no-repeat -200px 0;
+	background: url('./images/wei_card.png') no-repeat -200px 0;
 }
 #errPage span.t2 {
 	margin-top: 50px;

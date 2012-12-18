@@ -224,6 +224,7 @@ div.fbg {
 	top: 50px;
 	border: 5px solid #DCDCDC;
 	padding: 15px;
+	width:220px;
 }
 .loadState{
 	position: absolute;

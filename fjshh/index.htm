@@ -1,0 +1,710 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0;">
+        <meta name="format-detection" content="telephone=no">
+        <title>
+            福建生活汇
+        </title>
+        <link rel="stylesheet" type="text/css" href="./misc/meishi_wei_v3.5.9.css">
+        <script src="./misc/wei_webapp_v3.5.9.js">
+        </script>
+        <style>
+            abbr,article,aside,audio,canvas,datalist,details,dialog,eventsource,figure,figcaption,footer,header,hgroup,mark,menu,meter,nav,output,progress,section,small,time,video{display:block;}
+        </style>
+    </head>
+    <body id="" class="">
+        <script>
+            var sid, ticket, qrcode, originQrcode, wxid, user_wxid, wticket;
+            window.from = '';
+
+            var linkArgs = (new MURLHash).get("args");
+            var ticket1 = (new MURLHash).get("ticket");
+            var officalQrid = [13264351456081, 13373091167772, 13484743293134];
+            var ftuanQrid = [13373091173762];
+            var newlinkArgs = /^(c\d{6})?[a-z]?(\d+)$/.exec(linkArgs);
+            if (newlinkArgs != undefined && newlinkArgs != null && newlinkArgs != '') {
+                var isOffical = isFtuan = false;
+                for (i in officalQrid) {
+                    if (newlinkArgs[2] == officalQrid[i]) {
+                        isOffical = true;
+                    }
+                }
+                if (isOffical) {
+                    window.location.href = "/qr/" + linkArgs + '?ticket=' + ticket1;
+                }
+                for (i in ftuanQrid) {
+                    if (newlinkArgs[2] == ftuanQrid[i]) {
+                        isFtuan = true;
+                    }
+                }
+                if (isFtuan) {
+                    window.location.href = "/weixin/r/1g9p?ticket=" + ticket1;
+                }
+            }
+            window.shareData = [];
+            var _isMM43 = /MicroMessenger\/[4-9]\.[3-9]/.test(navigator.userAgent);
+
+            function _hideLoading() { //关闭loading
+                setTimeout(function() {
+                    var div = document.getElementById('loading');
+                    if (div) div.style.display = 'none';
+                },
+                50);
+            }
+            function _showLoading() { //显示loading效果时
+                //    if (_isAndroid) return true;
+                var div = document.getElementById('loading');
+                if (!div) {
+                    div = document.createElement('div');
+                    div.id = 'loading';
+                    div.innerHTML = '<div class="bk"></div><div class="cont"><img src="./misc/images/loading_v20110919.gif" alt="loading..."/>正在加载...</div>';
+                    document.querySelector('body').appendChild(div);
+                } else {
+                    div.style.display = '';
+                }
+
+            }
+
+            window.addEventListener('DOMContentLoaded',
+            function() {
+/*		
+                // 去掉android下的loading
+                if (_isAndroid) {
+                    try {
+                        setTimeout(function() {
+                            WeixinJSBridge.finishLoading();
+                        },
+                        200);
+                    } catch(e) {}
+                } else {
+                		alert('-2---');
+                    _showLoading();
+                }
+
+                //配置app
+                WAPP.config({
+                    ajax_getCard: new WAPP.facade.modals.ReqObject( //请求1，扫描二维码后取得卡类型并返回数据
+                    '/wsh/shops', 'POST', {
+                        clientType: 'webapp',
+                    },
+                    function mycallback(result) { //可自定义的一个回调
+                        window.shareData = result.result.shareInfo;
+                        wxid = result.result.wxid;
+                        user_wxid = result.result.user_wxid;
+                        qrcode = result.result.qrcode;
+                        ticket = result.result.ticket;
+                        wticket = result.result.wticket;
+                        originQrcode = result.result.originQrcode;
+                        window.from = result.result.from;
+                        document.title = result.result.title ? result.result.title: '';
+                        WAPP.getConfigItem('ajax_usePower').params.wticket = wticket;
+                        WAPP.getConfigItem('ajax_reversePower').params.wticket = wticket;
+                    }),
+                    ajax_getPower: new WAPP.facade.modals.ReqObject( //请求2，获得特权详情
+                    '/wsh/detail', 'POST', {
+                        clientType: 'webapp',
+                    },
+                    function mycallback(result) { //可自定义的一个回调
+                        window.shareData = result.result.shareInfo;
+                        window.from = result.result.from;
+                        document.title = result.result.title ? result.result.title: '';
+                    }),
+                    ajax_usePower: new WAPP.facade.modals.ReqObject( //请求3，立即使用
+                    '/wsh/getVerifyCode', 'POST', {
+                        clientType: 'webapp',
+                    }),
+                    ajax_reversePower: new WAPP.facade.modals.ReqObject( //请求4，反向验证
+                    '/wsh/checkGift', 'POST', {
+                        clientType: 'webapp',
+                    }),
+                    callback_becomeMember: function(params) { //点击了“关注并获得会员卡”
+                        var qrcode = params['qrcode'];
+                        var wticket = params['wticket'];
+
+                        if (window.from == 1 && _isIOS && !_isMM43) {
+                            window.location.href = 'weixin://profile/' + wxid;
+                        } else {
+                            WeixinJSBridge.invoke('addContact', {
+                                "webtype": "1",
+                                // 添加联系人的场景，1表示企业联系人。
+                                "username": wxid,
+                                　 // 需要添加的联系人username
+                            },
+                            function(res) {
+                                if (res.err_msg == 'add_contact:ok') {
+                                    _showLoading();
+                                    window.setTimeout(function() {
+                                        WAPP.utils.ajax( // ajax取得卡号
+                                        new WAPP.facade.modals.ReqObject('/wsh/joinMember?qrcode=' + qrcode, 'POST', {
+                                            clientType: 'webapp',
+                                            qrcode: qrcode,
+                                            wticket: wticket,
+                                            ticket: ticket
+                                        }),
+                                        function(result) {
+                                            if (result.code == 0) {
+                                                var shopnum = result.result.shopnum; //result.shopnum;
+                                                var _h = null;
+                                                if (WAPP.getCurrPage() == WAPP.PAGE_MEMBERCARD_1) _h = WAPP.getHandler('memberPageHandler');
+                                                if (WAPP.getCurrPage() == WAPP.PAGE_SHOPCARD_1) _h = WAPP.getHandler('shopPageHandler');
+                                                _h({
+                                                    issuccess: 1,
+                                                    shopnum: shopnum,
+                                                    message: result.message
+                                                });
+                                                // barcode
+                                                //                                        window.location.reload();
+                                                var fg = _q('#card_ctn .fg');
+                                                var cname = _q('.cname');
+                                                var bcimg = _q('#card_ctn .fg img:nth-child(2)');
+                                                if (result.result.hasOwnProperty('barcodeimg')) {
+                                                    cname.innerHTML = '';
+                                                    bcimg.src = result.result.barcodeimg;
+                                                    _show(bcimg);
+                                                    _addClass(fg, 'barcode');
+                                                } else {
+                                                    _removeClass(fg, 'barcode');
+                                                    _hide(bcimg);
+                                                }
+                                            }
+                                            _hideLoading();
+                                        },
+                                        false);
+                                    },
+                                    2012);
+                                } else {
+                                    // 失败
+                                }
+                            });
+                        }
+                    },
+                    //页面切换后会触发
+                    onPageChange: function(state) {
+
+                        if (state == WAPP.PAGE_POWER_2) { //是特权验证码页面
+                            // 验证码特权页全站增加分享到朋友圈
+                            //上线时应替换此处图片路径
+                            var assetPath = './misc/images/';
+
+                            _writeCSS(unescape('body%20%23shareBtn%7Bopacity%3A0%3B%7Dbody.s1%20%23shareBtn%7Bopacity%3A1%3B%7Dbody%23powerPage.s1%7Bpadding-top%3A0%3B%7D%20%23use_code%7Bmargin-bottom%3A25px%3B%7D%20%23shareBtn%7Bwidth%3A218px%3Bheight%3A38px%3Bfont-size%3A18px%3Bline-height%3A38px%3B%20display%3Ablock%3Bmargin%3A0%20auto%2025px%20auto%3Btext-indent%3A30px%3B%20color%3A%23fff%3B%20-webkit-border-radius%3A3px%3B%20-moz-border-radius%3A3px%3B%20border-radius%3A3px%3B%20box-shadow%3A0%200%204px%20%23222%3B%20filter%3A%20dropshadow%28color%3D%23000%2C%20offx%3D1%2C%20offy%3D-1%29%3B%20text-shadow%3A%201px%20-1px%201px%20%23000%3B%20background-repeat%3Ano-repeat%2C%20repeat-x%3B%20background-size%3A22px%2023px%2C%20218px%2038px%3B%20background-position%3A39px%207px%2C%200%200%3B%20background-image%3A%20url%28' + assetPath + 'pyq_icon.jpg%29%2C%20-webkit-gradient%28linear%2C%200%25%200%25%2C%200%25%20100%25%2C%20from%28%2301a601%29%2C%20to%28%232bce2b%29%29%3B%20background-image%3A%20url%28' + assetPath + 'pyq_icon.jpg%29%2C%20-webkit-linear-gradient%28top%2C%20%232bce2b%2C%20%2301a601%29%3B%20background-image%3A%20url%28' + assetPath + 'pyq_icon.jpg%29%2C%20-moz-linear-gradient%28top%2C%20%232bce2b%2C%20%2301a601%29%3B%20background-image%3A%20url%28' + assetPath + 'pyq_icon.jpg%29%2C%20-ms-linear-gradient%28top%2C%20%232bce2b%2C%20%2301a601%29%3B%20background-image%3A%20url%28' + assetPath + 'pyq_icon.jpg%29%2C%20-o-linear-gradient%28top%2C%20%232bce2b%2C%20%2301a601%29%3B'));
+
+                            var sbtn = document.getElementById('shareBtn');
+                            if (sbtn) {
+                                document.querySelector('body').removeChild(sbtn);
+                            }
+                            sbtn = document.createElement('a');
+                            sbtn.id = 'shareBtn';
+                            sbtn.innerHTML = '分享到朋友圈';
+                            document.querySelector('body').appendChild(sbtn);
+
+                            sbtn.addEventListener('click',
+                            function(e) {
+                                // 分享到朋友圈
+                                shareTimeline();
+                            });
+                        }
+
+                    },
+                    callback_loadingOn: _showLoading,
+                    callback_loadingOff: _hideLoading,
+                    imgpath: './misc/images/'
+                });
+                WAPP.facade.startup();
+            });
+
+            // 当微信内置浏览器完成内部初始化后会触发WeixinJSBridgeReady事件。
+            document.addEventListener('WeixinJSBridgeReady',
+            function onBridgeReady() {
+
+                // 发送给好友
+                WeixinJSBridge.on('menu:share:appmessage',
+                function(argv) {
+                    shareFriend();
+                });
+
+                // 分享到朋友圈
+                WeixinJSBridge.on('menu:share:timeline',
+                function(argv) {
+                    shareTimeline();
+                });
+
+                // 分享到微博
+                WeixinJSBridge.on('menu:share:weibo',
+                function(argv) {
+                    shareWeibo();
+                });
+*/
+            },
+            false);
+
+        </script>
+        <div id="loading" style="display: none; ">
+            <div class="bk">
+            </div>
+            <div class="cont">
+                <img src="./misc/images/loading_v20110919.gif" alt="loading...">
+                正在加载...
+            </div>
+        </div>
+        <div id="mappContainer">
+
+            <section class="cc_shop2" id="card_ctn">
+                <div class="bk1">
+                	<span class="cname" style="color:#8e6c11;">
+                            "生活汇-福州"
+                     </span>
+                </div>
+                <!--
+                <div class="cont">
+                    <div class="card " data-side="1">
+                        <div class="front">
+                            <figure class="fg" style="background-image:url(./misc/images/_wei_card_golden.jpg);">
+                               
+                                <img src="./fjshh/0">
+                                <img src="./fjshh/{" style="display: none; ">
+                             
+                                <figcaption class="fc">
+                                    <span class="cname" style="color:#8e6c11;">
+                                        微信会员卡
+                                    </span>
+                                    <span class="t" style="color:#fff;text-shadow:#000 0 -1px;">
+                                    </span>
+                                    <span class="n" style="color: rgb(255, 255, 255); text-shadow: rgb(0, 0, 0) 0px -1px; ">
+                                        37058
+                                    </span>
+                                </figcaption>
+                            </figure>
+                        </div>
+                        <div class="back">
+                            <figure class="fg" style="background-image:url(./misc/images/_wei_card_golden_back.jpg);">
+                                <div class="backtag">
+                                    <canvas data-bgcolor="#d90001" width="54" height="30">
+                                    </canvas>
+                                    <p style="color:#ffffff">
+                                        返回
+                                    </p>
+                                </div>
+                                <div class="info">
+                                    <p class="addr">
+                                        台江区工业路193号
+                                    </p>
+                                    <p class="tel">
+                                        <a class="autotel" href="javascript:void(0)" data-telnum="tel:0591-88888888">
+                                            0591-8888888
+                                        </a>
+                                    </p>
+                                </div>
+                                <p class="keywords">
+                                    福州生活汇 商家
+                                </p>
+                            </figure>
+                        </div>
+                    </div>
+                    <div class="vs1" style="display: none; ">
+                        <span class="c">
+                            37141人已领卡
+                        </span>
+                        <h1>
+                            尊享
+                            <em>
+                                48
+                            </em>
+                            家精选商户特权
+                            <br>
+                            关注并成为会员，享受超多惊喜折扣，随时查阅掌握最新动态。
+                        </h1>
+                    </div>
+                    <div class="vs2" style="">
+                        <h1>
+                        </h1>
+                    </div>
+                </div>
+                -->
+            </section>
+
+            <div class="vs1" style="display: none; ">
+                <ul id="shop_icons">
+                    <li style="background-image: url(http://qqfood.tc.qq.com/meishio/16/77450297-1ce0-4409-b349-79eac4440247/0); -webkit-background-size: 25px; background-size: 25px; background-position: 0px 0px; background-repeat: no-repeat no-repeat; ">
+                        <em>
+                            1
+                        </em>
+                    </li>
+                    <li style="background-image: url(./misc/images/icons.png); -webkit-background-size: 25px 500px; background-size: 25px 500px; background-position: 0px 0px; background-repeat: no-repeat no-repeat; ">
+                        <em>
+                            25
+                        </em>
+                        餐饮
+                    </li>
+                    <li style="background-image: url(./misc/images/icons.png); -webkit-background-size: 25px 500px; background-size: 25px 500px; background-position: 0px -50px; background-repeat: no-repeat no-repeat; ">
+                        <em>
+                            12
+                        </em>
+                        购物
+                    </li>
+                    <li style="background-image: url(./misc/images/icons.png); -webkit-background-size: 25px 500px; background-size: 25px 500px; background-position: 0px -100px; background-repeat: no-repeat no-repeat; ">
+                        <em>
+                            10
+                        </em>
+                        休闲
+                    </li>
+                </ul>
+                <div class="footFix" id="footBtn">
+                    <a href="javascript:void(0)">
+                        关注并获得会员卡
+                    </a>
+                </div>
+            </div>
+            <div class="vs2" id="shop_lst" style="">
+                <article class="shoptype" id="type0">
+                    <h1 style="background-image: url(http://qqfood.tc.qq.com/meishio/16/77450297-1ce0-4409-b349-79eac4440247/0); -webkit-background-size: 20px; background-size: 20px; background-position: 0px 0px; background-repeat: no-repeat no-repeat; ">
+                        精彩活动
+                    </h1>
+                    <div class="lst">
+                        <ul id="lstname0">
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:55588,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    走进宝龙我最闪亮 • 2013年形象大使选拔
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </article>
+                <article class="shoptype" id="type1">
+                    <h1 style="background-image: url(./misc/images/icons.png); -webkit-background-size: 15px 300px; background-size: 15px 300px; background-position: 0px 0px; background-repeat: no-repeat no-repeat; ">
+                        餐饮美食
+                    </h1>
+                    <div class="lst">
+                        <ul id="lstname1">
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50568,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    2F | 马路英雄 • 8.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:52581,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    1F | 优格花园 • 饮品5.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58286,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 便所欢乐主题餐厅 • 8.5折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58287,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    2F | 一寿司 • 7.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50552,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    5F | 渔人码头 • 8.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50567,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 上野小路 • 寿司7.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:55822,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 纽芝兰冰淇淋 • 单球仅8元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50555,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 圣杰士披萨阳光餐厅 • 2款美食半价
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50565,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 90°炭烧咖啡 • 饮品8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:52941,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 通天阁 • 综合刺身套餐118元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50566,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 京都一品 • 消费立减10元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50553,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 重庆鸡公煲 • 8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50571,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 火宴山时尚涮烤 • 8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50564,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 宝龙蹄膀店 • 8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:52937,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 吉鑫记 • 套餐特价仅58元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50559,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 百度烤肉 • 自助餐低至43元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50563,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 渔家乐斑鱼火锅 • 斑鱼买2斤送1斤
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50556,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 两岸咖啡 • 特价套餐仅88元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:55371,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 牛角烧烤 • 9.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50558,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 潇肴江湖 • 8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50561,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 女仆革命 • 消费满30立减5元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:52940,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 一心一客 • 满20元立减2元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50554,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 快嘴网 • 8.8折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50562,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    5F | 北角咖啡 • 鸡尾酒9.0折
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50557,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    B1F | 金饭庄 • 8.8折特权
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="turn on" data-scroll-flag="lstname1" style="" data-clkbinded="1">
+                            展开全部25条会员特权
+                        </a>
+                        <a class="turn off" data-scroll-flag="lstname1" data-clkbinded="1" style="display: none; ">
+                            收起
+                        </a>
+                    </div>
+                </article>
+                <article class="shoptype" id="type2">
+                    <h1 style="background-image: url(./misc/images/icons.png); -webkit-background-size: 15px 300px; background-size: 15px 300px; background-position: 0px -30px; background-repeat: no-repeat no-repeat; ">
+                        时尚购物
+                    </h1>
+                    <div class="lst">
+                        <ul id="lstname2">
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50536,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    4F | 巴黎香榭 • 6.5折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58266,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    3F | 百合坊 • 7.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58264,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 歌纳雅 • 7.5折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50539,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | ZERO哲若 • 8.5折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58265,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 格调女装 • 8.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50537,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | A²时尚男装 • 8.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50538,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | Ori Gin原点 • 8.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50532,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | MAMAS玛丽露 • 享双重折扣
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58312,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    2F | 吉田耀司 • 折上再享9.5折
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50546,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 思薇婚纱 • 租借婚纱3.5折
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58263,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 格林 • 8.5折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:57788,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    2F | 美舍雅阁 • 赠价值15元面膜一片
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="turn on" data-scroll-flag="lstname2" style="" data-clkbinded="1">
+                            展开全部12条会员特权
+                        </a>
+                        <a class="turn off" data-scroll-flag="lstname2" data-clkbinded="1" style="display: none; ">
+                            收起
+                        </a>
+                    </div>
+                </article>
+                <article class="shoptype" id="type3">
+                    <h1 style="background-image: url(./misc/images/icons.png); -webkit-background-size: 15px 300px; background-size: 15px 300px; background-position: 0px -60px; background-repeat: no-repeat no-repeat; ">
+                        休闲娱乐
+                    </h1>
+                    <div class="lst">
+                        <ul id="lstname3">
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50534,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    3F | 紫罗兰造型 • 剪发套餐28/次
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58285,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5">
+                                <a>
+                                    3F | 美姿城美容 • 面部细胞水密码仅9.9元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:55369,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    2F | 伊芙悦 • 修手+极速手护特价20元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:58284,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 紫罗兰造型 • 剪发套餐28元/次
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:55370,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 海豚湾 • 可卸光疗特价35元
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50550,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 新创艺造型 • 低至5.0折
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50547,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 乐乐美甲 • 48元享纯色光疗
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50544,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    3F | 艾尚秀美甲沙龙 • 快速有氧光疗特价
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50551,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    1F | 大拇指美甲 • 9.0折特权
+                                </a>
+                            </li>
+                            <li data-ajax-params="{&quot;sid&quot;:&quot;6274449498546729170&quot;,&quot;bcid&quot;:50543,&quot;wticket&quot;:&quot;b9662cd6f4dac79f97c2a3a755ed1b04&quot;,&quot;ticket&quot;:&quot;AUiPlDsBAADwts1Q&quot;,&quot;qrcode&quot;:&quot;13484743302481&quot;}"
+                            data-ajax-act="5" class="r" style="display: none; ">
+                                <a>
+                                    4F | 艾薇儿主题婚纱摄影 • 立减1000元
+                                </a>
+                            </li>
+                        </ul>
+                        <a class="turn on" data-scroll-flag="lstname3" style="" data-clkbinded="1">
+                            展开全部10条会员特权
+                        </a>
+                        <a class="turn off" data-scroll-flag="lstname3" data-clkbinded="1" style="display: none; ">
+                            收起
+                        </a>
+                    </div>
+                </article>
+            </div>
+            <footer style="height:20px;">
+            </footer>
+        </div>
+    </body>
+
+</html>

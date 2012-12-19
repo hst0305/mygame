@@ -52,8 +52,60 @@ GC.DOM = {
 			}
 			element.className = newClassName.join(' ');
 		}
+	},
+	getHeight : function(elem) {//纯高度。
+		return parseInt(GC.DOM.getStyle(elem, 'height'));
+	},
+	fullHeight : function(elem) {//包括border padding的值。
+		if (GC.DOM.getStyle(elem, 'display') != 'none') {
+			return elem.offsetHeight || GC.DOM.getHeight(elem);
+		}
+		var h = elem.clientHeight || GC.DOM.getHeight(elem);
+		return h;
 	}
 };
+GC.Util = {
+	getScrollY : function() {
+		var de = document.documentElement;
+		return self.pageYOffset || (de && de.scrollTop) || document.body.scrollTop;
+	},
+	getScrollX : function() {
+		var de = document.documentElement;
+		return self.pageXOffset || (de && de.scrollLeft) || document.body.scrollLeft;
+	},
+	gageHeight : function() {//获取页面高度包括被滚动的高度
+		return document.body.scrollHeight;
+	},
+	windowHeight : function() {//获取视口的高度，可见区的高度
+		var de = document.documentElement;
+		return self.innerHeight || (de && de.clientHeight) || document.body.clientHeight;
+	},
+	windowWidth : function() {//获取视口的高度，可见区的高度
+		var de = document.documentElement;
+		return self.innerWidth || (de && de.clientWidth) || document.body.clientWidth;
+	}
+};
+
+function showModlePanel(id,width,height){
+	var wh=GC.Util.windowHeight();
+	var ww=GC.Util.windowWidth();
+	var panel=GC.DOM.get(id);
+	var panelBg=GC.DOM.get("panelBg");
+	GC.DOM.removeClass(panel,"none");
+	GC.DOM.removeClass(panelBg,"none");
+	GC.DOM.addClass(panel,"show");
+	panel.style.width=width+"px";
+	panel.style.height=height+"px";
+	panel.style.top=(wh-height)/2+GC.Util.getScrollY()+"px";
+	panel.style.left=(ww-width)/2+GC.Util.getScrollX()+"px";
+}
+function hiddModlePanel(id){
+	var panel=GC.DOM.get(id);
+	GC.DOM.removeClass(panel,"show");
+	GC.DOM.addClass(panel,"none");
+	GC.DOM.addClass(GC.DOM.get("panelBg"),"none");
+}
+
 /**
  * 图片资源管理器
  */

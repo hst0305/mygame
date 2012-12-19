@@ -1,11 +1,53 @@
 .none {
 	display: none;
 }
-.red{
+.red {
 	color: red;
 }
-.fb{
+.fb {
 	font-weight: bold;
+}
+.tc{
+	text-align: center;
+}
+.btn {
+	border: 1px solid #DCDCDC;
+	padding: 7px;
+	cursor: pointer;
+	width: 140px;
+	text-align: center;
+	background-color: #DCDCDC;
+	margin-left: 160px;
+}
+.btn:hover {
+	background-color: #fffff;
+	font-weight: bold;
+}
+.panelBg {
+	width: 100%;
+	height: 100%;
+	background-color: #000000;
+	opacity: 0.7;
+	position: absolute;
+	z-index: 900;
+}
+.modlePanel {
+	position: absolute;
+	z-index: 999;
+}
+.submitPanel{
+	background-color:#FFFFFF;
+	border: 3px solid #DCDCDC;
+}
+.modlePanel .T_T{
+	text-align: center;
+	padding:7px;
+	margin:0;
+	border: 1px solid #DCDCDC;
+}
+.modlePanel .T_T p{
+	padding:0;
+	margin:0;
 }
 #gameCanvas {
 	width: 480px;
@@ -224,15 +266,15 @@ div.fbg {
 	top: 50px;
 	border: 5px solid #DCDCDC;
 	padding: 15px;
-	width:220px;
+	width: 220px;
 }
-.loadState{
+.loadState {
 	position: absolute;
 	z-index: 100;
 	top: 48%;
 	left: 50%;
 	color: #FFFFFF;
 	font-weight: bold;
-	font-size:18px;
-	-webkit-transform:rotate(-7deg);
+	font-size: 18px;
+	-webkit-transform: rotate(-7deg);
 }

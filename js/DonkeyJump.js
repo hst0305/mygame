@@ -514,6 +514,18 @@ DonkeyJump.stateInit = function() {
 			__m.className = "music_on";
 		}
 	};
+	GC.DOM.get("submitPoint").onclick = function() {
+		showModlePanel("submitPanel",300,200);
+	};
+	GC.DOM.get("submitBtn").onclick = function() {
+		hiddModlePanel("submitPanel");
+		var userName=GC.DOM.get("userName").value;
+		Storage.set(userName,DonkeyJump.point,2);
+	};
+	GC.DOM.get("ranking").onclick = function() {
+		TOP.update("T_C",2);
+		showModlePanel("Top10",400,280);
+	};
 	GC.DOM.get("game_stop").onclick = function() {
 		GC.DOM.get("game_stop").className = "none";
 		GC.DOM.get("game_start").className = "";

@@ -9,6 +9,19 @@
 		<link type="text/css" rel="stylesheet" href="css/main.css" />
 	</head>
 	<body>
+		<div id="panelBg" class="panelBg none"></div>
+		<div id="submitPanel" class="submitPanel modlePanel none">
+			<div class="T_T">
+				<p>提交分数</p>
+			</div>
+			<div class="T_C">
+				<p>姓名：</p>
+				<input id="userName" type="text" />
+				<br />
+				<input id="submitBtn" value="提交" type="button" />
+				<input value="关闭" type="button" onclick="hiddModlePanel('submitPanel')" />
+			</div>
+		</div>
 		<div id="donkeyJump">
 			<!-- 游戏主体 -->
 			<div class="WF">
@@ -17,6 +30,17 @@
 				<p>2、你只要用键盘的<span class="red fb">左右键</span>来控制驴子的左右移动即可。</p>
 				<p>3、当驴子掉下来的时候需要踩住云才能在往上跳。</p>
 				<p>4、你只能往前冲，没有回头路！</p>
+			</div>
+			<div id="Top10" class="submitPanel modlePanel none">
+				<div class="T_T">
+					<p>得分排行榜</p>
+				</div>
+				<div class="T_C" id="T_C">
+					
+				</div>
+				<div class="tc">
+					<input value="关闭" type="button" onclick="hiddModlePanel('Top10')" />
+				</div>
 			</div>
 			<div id="gameBody" class="block">
 				<div id="gameCanvas" class="fbg">
@@ -56,9 +80,10 @@
 								得分情况
 							</p>
 						</div>
+						<div id="submitPoint" class="btn">提交分数</div>
 					</div>
-					<div id="btn" class="btn none">
-						<div class="ranking">
+					<div id="btn" class="btnArea none">
+						<div class="ranking" id="ranking">
 							<span class="none">排行榜</span>
 						</div>
 						<div id="startBut" class="reStart">
@@ -104,5 +129,6 @@
 		<script type="text/javascript" src="js/Main.js"></script>
 		<script type="text/javascript" src="js/Stair.js"></script>
 		<script type="text/javascript" src="js/DonkeyJump.js"></script>
-
+		
+		<script type="text/javascript" src="webStorage/storage.js"></script>
 </html>

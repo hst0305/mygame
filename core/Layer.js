@@ -1,73 +1,33 @@
-/**
- * 分层组件
- */
 function Layer(cfg) {
 	this.canvas = "";
 	this.x = 0;
 	this.y = 0;
 	this.width
 	this.height
-
-	/**
-	 * 视口对象
-	 */
 	this.viewport = null;
-	/**
-	 * 场景离视口的距离
-	 */
 	this.distance = 1;
-	/**
-	 * 动画精灵列表
-	 */
-	this.__sprite = [];
-	/**
-	 * 分层画布对象
-	 */
+	this.childs = [];
 	this.__canvas = null;
-	/**
-	 * 2d绘图上下文
-	 */
 	this.__context = null;
-	/**
-	 * 分层画布对象缓存
-	 */
 	this.__canvasBuffer = null;
-	/**
-	 * 2d绘图上下文缓存
-	 */
 	this.__contextBuffer = null;
-	/**
-	 * 分层状态是否改变
-	 */
 	this.__change = true;
-	this.__ID = null;
-	/**
-	 * 初始化状态
-	 */
 	this.initialized = false;
 	this.parent = null;
-	this.destoryCache = [];
 	GC.extend(this, cfg);
 }
-
-/**
- * 初始化分层
- */
-Layer.prototype.init = function(oParent) {
-	this.parent = oParent;
+Layer.prototype.init = function() {
 	this.setCanvas(this.canvas);
-	var sprite = this.__sprite;
-	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		var item = sprite[i];
-		item.x /= this.distance;
-		item.y /= this.distance;
-		item.init(this);
+	var childs = this.childs;
+	for (var i = 0, ln = childs.length; i < ln; i++) {
+		var child = childs[i];
+		child.x /= this.distance;
+		child.y /= this.distance;
+		child.init(this);
 	}
 	this.initialized = true;
+	this.oninit();
 };
-/**
- * 设置画布
- */
 Layer.prototype.setCanvas = function(canvas) {
 	var __canvas = null;
 	if ( typeof canvas === 'string') {
@@ -88,40 +48,33 @@ Layer.prototype.setCanvas = function(canvas) {
 	this.height = h;
 	this.__contextBuffer = this.__canvasBuffer.getContext('2d');
 };
-/**
- * 清空画布
- */
 Layer.prototype.clear = function() {
 	this.__context.clearRect(0, 0, this.width, this.height);
 };
-/**
- * 改变分层状态
- */
 Layer.prototype.change = function() {
 	this.__change = true;
 };
-Layer.prototype.onrender = GC.fn;
 Layer.prototype.render = function() {
 	if (this.__change) {
-		var aSprite = this.getSprite(), oSprite = null, viewport = this.viewport;
+		var childs = this.getChilds(), child = null, viewport = this.viewport;
 		var vx = viewport.x / this.distance, vy = viewport.y / this.distance, vw = viewport.width, vh = viewport.height;
 		var cx = cy = cw = ch = 0;
-		for (var i = 0, ln = aSprite.length; i < ln; i++) {
-			oSprite = aSprite[i];
-			cx = oSprite.x;
-			cy = oSprite.y;
-			cw = oSprite.width;
-			ch = oSprite.height;
+		for (var i = 0, ln = childs.length; i < ln; i++) {
+			child = childs[i];
+			cx = child.x;
+			cy = child.y;
+			cw = child.width;
+			ch = child.height;
 			// if (oSprite.visible && Math.abs((cx + cw / 2) - (vx + vw / 2)) < (cw + vw) / 2 && Math.abs((cy + ch / 2) - (vy + vh / 2)) < (ch + vh) / 2) {
-			if (oSprite.visible && Math.abs(cx - (vx + vw)) < (cw + vw) && Math.abs(cy - (vy + vh)) < (ch + vh)) {
-				oSprite.x = cx - vx;
-				oSprite.y = cy - vy;
+			if (child.visible && Math.abs(cx - (vx + vw)) < (cw + vw) && Math.abs(cy - (vy + vh)) < (ch + vh)) {
+				child.x = cx - vx;
+				child.y = cy - vy;
 				this.__contextBuffer.save();
-				this.__transform(oSprite);
-				oSprite.draw(this.__contextBuffer);
+				this.__transform(child);
+				child.draw(this.__contextBuffer);
 				this.__contextBuffer.restore();
-				oSprite.x = cx;
-				oSprite.y = cy;
+				child.x = cx;
+				child.y = cy;
 			}
 		}
 		this.clear();
@@ -132,41 +85,14 @@ Layer.prototype.render = function() {
 	}
 };
 Layer.prototype.update = function(deltaTime) {
-	this.__destory();
-	var sprite = this.__sprite, deltaTime = deltaTime, __DCL = this.destoryCache.length;
-	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		if (sprite[i]) {
-			sprite[i]._update(deltaTime);
-		}
+	var childs = this.childs, deltaTime = deltaTime;
+	for (var i = 0, ln = childs.length; i < ln; i++) {
+		childs[i].update(deltaTime);
 	}
-	if (__DCL != this.destoryCache.length) {
-		this.__destory();
-	}
+	this.onupdate(deltaTime);
 };
-Layer.prototype.__destory = function() {
-	var __destoryCache = this.destoryCache, sprite = this.__sprite;
-	for (var i = 0, ln = __destoryCache.length; i < ln; i++) {
-		sprite[__destoryCache[i]] = null;
-	}
-	if (__destoryCache.length > 50) {
-		//console.log("总个数：" + sprite.length);
-		for (var i = 0; i < sprite.length; i++) {
-			if (!sprite[i]) {
-				sprite.splice(i, 1);
-				i--;
-			} else {
-				sprite[i].__ID = i;
-			}
-		}
-		//console.log("删除的个数：" + this.destoryCache.length + "删除后的个数：" + sprite.length);
-		this.destoryCache = [];
-	}
-}
-/**
- * 变形处理
- */
-Layer.prototype.__transform = function(sprite) {
-	var __s = sprite;
+Layer.prototype.__transform = function(child) {
+	var __s = child;
 	this.__contextBuffer.translate(__s.x, __s.y);
 	if (__s.alpha < 1) {
 		this.__contextBuffer.globalAlpha = __s.alpha;
@@ -186,51 +112,46 @@ Layer.prototype.__transform = function(sprite) {
 	}
 
 };
-/**
- * 添加精灵
- */
-Layer.prototype.putSprite = function(sprite) {
-	var index = this.__sprite.length;
-	sprite.__ID = index;
-	this.__sprite.push(sprite);
+Layer.prototype.appendChild = function(child) {
+	child.parent=this;
+	this.childs.push(child);
 };
-/**
- * 删除精灵
- */
-Layer.prototype.reMoveSprite = function(id) {
-	var sprite = this.__sprite;
-	sprite.splice(id, 1);
-	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		sprite[i].__ID = i;
-	}};
-/**
- * 获取精灵
- */
-Layer.prototype.getSprite = function() {
-	var sprite = this.__sprite, __s = [];
-	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		if (sprite[i]) {
-			__s.push(sprite[i]);
+Layer.prototype.getChilds = function() {
+	return this.childs;
+};
+Layer.prototype.removeChild = function(child) {
+	var childs = this.childs;
+	for (var i = 0, len = childs.length; i < len; i++) {
+		if (childs[i] == child) {
+			this.removeChildAt(i);
+			break;
 		}
 	}
-	return __s;
-};
-
-/**
- * destory
- */
-Layer.prototype.putDestoryCache = function(id) {
-	this.destoryCache.push(id);
-};
-/**
- * destory
- */
-Layer.prototype.destory = function() {
-	var sprite = this.getSprite();
-	for (var i = 0, ln = sprite.length; i < ln; i++) {
-		sprite[i].destory();
+}
+Layer.prototype.removeChildAt = function(index) {
+	var child = this.childs.splice(index, 1);
+	if (child) {
+		child.parent = null;
 	}
-	this.parent.putDestoryCache(this.__ID);
-	this.viewport = this.parent = this.__canvas = this.__context = this.__canvasBuffer = this.__contextBuffer = this.onrender = this.__sprite = this.destoryCache = null;
-	delete this;
+}
+Layer.prototype.oninit = GC.fn;
+Layer.prototype.ondestory = GC.fn;
+Layer.prototype.onshow = GC.fn;
+Layer.prototype.onhide = GC.fn;
+Layer.prototype.onupdate = GC.fn;
+Layer.prototype.onrender = GC.fn;
+Layer.prototype.ondraw = GC.fn;
+Layer.prototype.oninit = GC.fn;
+Layer.prototype.ondestory = GC.fn;
+
+Layer.prototype.destory = function() {
+	var childs = this.getChilds();
+	while (childs.length > 0) {
+		childs[0].destory();
+	}
+	if(this.parent){
+		this.parent.removeChild(this);
+	}
+	this.ondestory();
+	this.ondraw = this.onupdate = this.onhide = this.onshow = this.ondestory = this.viewport = this.oninit = this.__canvas = this.__context = this.__canvasBuffer = this.__contextBuffer = this.onrender = this.childs = null;
 };

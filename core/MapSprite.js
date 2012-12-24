@@ -13,21 +13,18 @@ function MapSprite(cfg) {
 	this.repeat = false;
 	this.visible = true;
 	this.parent = null;
-	this.__ID=null;
 	this.initialized = false;
 	GC.extend(this, cfg);
 }
 
-MapSprite.prototype.init = function(oParent) {
-	this.parent = oParent;
+MapSprite.prototype.init = function() {
 	if (this.image && (this.width == 0 || this.height == 0)) {
 		this.width = this.image.width;
 		this.height = this.image.height;
 	}
 	this.initialized = true;
 };
-MapSprite.prototype._update = function(deltaTime) {
-};
+MapSprite.prototype.update = GC.fn;
 /**
  * 绘制图片
  */
@@ -46,7 +43,7 @@ MapSprite.prototype.draw = function(context) {
 };
 MapSprite.prototype.destory = function() {
 	this.image = null;
-	this.parent.reMoveSprite(this.__ID);
-	this.parent = null;
-	delete this;
+	if(this.parent){
+		this.parent.removeChild(this);
+	}
 };

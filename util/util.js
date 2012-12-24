@@ -11,6 +11,24 @@ GC.extend = function(obj, newProperties) {
 	}
 	return obj;
 };
+GC.inherit = function(childClass, parentClass) {
+	var Constructor = new Function();
+	Constructor.prototype = new parentClass();
+	childClass.prototype = new Constructor();
+	
+	
+	// childClass.prototype.constructor = childClass;
+	// childClass.superclass = parentClass.prototype;
+// 
+	// if (childClass.prototype.constructor == Object.prototype.constructor) {
+		// childClass.prototype.constructor = parentClass;
+	// }
+};
+GC.Math={
+	random : function(min, max) {
+		return Math.floor((max - min + 1) * Math.random()) + min;
+	}
+};
 GC.fn = new Function();
 GC.DOM = {
 	get : function(id) {
@@ -86,24 +104,25 @@ GC.Util = {
 	}
 };
 
-function showModlePanel(id,width,height){
-	var wh=GC.Util.windowHeight();
-	var ww=GC.Util.windowWidth();
-	var panel=GC.DOM.get(id);
-	var panelBg=GC.DOM.get("panelBg");
-	GC.DOM.removeClass(panel,"none");
-	GC.DOM.removeClass(panelBg,"none");
-	GC.DOM.addClass(panel,"show");
-	panel.style.width=width+"px";
-	panel.style.height=height+"px";
-	panel.style.top=(wh-height)/2+GC.Util.getScrollY()+"px";
-	panel.style.left=(ww-width)/2+GC.Util.getScrollX()+"px";
+function showModlePanel(id, width, height) {
+	var wh = GC.Util.windowHeight();
+	var ww = GC.Util.windowWidth();
+	var panel = GC.DOM.get(id);
+	var panelBg = GC.DOM.get("panelBg");
+	GC.DOM.removeClass(panel, "none");
+	GC.DOM.removeClass(panelBg, "none");
+	GC.DOM.addClass(panel, "show");
+	panel.style.width = width + "px";
+	panel.style.height = height + "px";
+	panel.style.top = (wh - height) / 2 + GC.Util.getScrollY() + "px";
+	panel.style.left = (ww - width) / 2 + GC.Util.getScrollX() + "px";
 }
-function hiddModlePanel(id){
-	var panel=GC.DOM.get(id);
-	GC.DOM.removeClass(panel,"show");
-	GC.DOM.addClass(panel,"none");
-	GC.DOM.addClass(GC.DOM.get("panelBg"),"none");
+
+function hiddModlePanel(id) {
+	var panel = GC.DOM.get(id);
+	GC.DOM.removeClass(panel, "show");
+	GC.DOM.addClass(panel, "none");
+	GC.DOM.addClass(GC.DOM.get("panelBg"), "none");
 }
 
 /**

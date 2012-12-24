@@ -71,10 +71,12 @@ var TOP = {
 }
 function setStorage() {
 //window.sessionStorage.clear();
-Storage.set("hst0305", 80785, 2);
+Storage.set("hst0305", 60528, 2);
 Storage.set("老李", 55485, 2);
-Storage.set("zxr", 78920, 2);
-Storage.set("大魔头", 83564, 2);
+Storage.set("zxr", 49008, 2);
+Storage.set("大魔头", 43208, 2);
+Storage.set("老朱", 41508, 2);
+Storage.set("陈同学", 39827, 2);
 }
 //window.addEventListener("storage",displayStorageEvent,true);
 window.addEventListener("load", setStorage, true);

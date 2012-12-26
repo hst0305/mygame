@@ -1,8 +1,14 @@
+@charset "utf-8";
 body {
-	background-color: #E5E5E5;
+	background-color: #eee;
 	text-align: center;
-	font-family: 'Helvetica Neue', sans-serif;
+	font-family: Georgia, Microsoft YaHei;
 	overflow-x: hidden;
+	color:#333333;
+	font-size:17px;
+	line-height:150%;
+	-webkit-text-size-adjust:none;
+	min-width:320px;
 }
 body, article, section, h1, h2, hgroup, p, a, ul, li, em, div, small, span, footer, canvas, figure, figcaption, input {
 	margin: 0;
@@ -12,9 +18,18 @@ img {
 	border: none;
 }
 a {
-	text-decoration: none;
+	text-decoration:none;
+	color:#333;
 	cursor: pointer;
 }
+a:hover, a:active, a:focus {
+	color:#900;
+	text-decoration:none;
+}
+a:active {
+	color:#9e9e9e;
+}
+
 a.autotel {
 	text-decoration: none;
 	color: inherit;
@@ -305,8 +320,8 @@ small, small em {
 	position: relative;
 }
 #card_ctn .bk1 {
-	height: 45px;
-	background: #4b5359 url('./images/wei_shop_bk1.jpg') repeat-x 0 0;
+	height: 70px;
+	background-color:#ffffff;
 }
 #card_ctn .cont {
 	min-height: 170px;
@@ -458,17 +473,18 @@ small, small em {
 }
 .fc .cname, .fc .t, .fc .n {
 	display: inline-block;
-	height: 20px;
+	height: 45px;
 	overflow: hidden;
 	white-space: nowrap;
 }
 .cname {
-	line-height: 46px;
+	line-height: 70px;
 	font-size: 20px;
-	font-family: 'Helvetica Neue', sans-serif;
-	font-weight: bolder;
-	color: #e46084;
+	font-family: Microsoft YaHei,SimHei;
+	color:#3399ff;
+	font-weight:400;
 }
+.cname img{vertical-align:middle;}
 .fc .t {
 	width: 106px;
 	font-size: 12px;
@@ -618,13 +634,12 @@ small, small em {
 	color: #737373;
 }
 .shoptype {
-	padding: 5px 0 12px 0;
+	padding: 18px 0 12px 0;
 	text-align: left;
 }
 .shoptype h1 {
 	height: 22px;
 	line-height: 22px;
-	color: #655744;
 	font-size: 12px;
 	font-weight: normal;
 	padding-left: 24px;
@@ -632,7 +647,6 @@ small, small em {
 }
 .shoptype .lst {
 	margin: 4px 10px 0 10px;
-	border: 1px solid #d8d8d8;
 	box-shadow: 0 0 5px #eae7e0;
 	background-color: #fff;
 	border-radius: 5px;
@@ -655,7 +669,7 @@ small, small em {
 	line-height: 40px;
 	height: 40px;
 	text-align: center;
-	color: #527511;
+	color: #FF4505;
 	font-size: 12px;
 	display: block;
 }
@@ -713,7 +727,7 @@ body#powerPage.s1 {
 	transition-duration: 0;
 }
 .use_hd {
-	border: solid #cacaca;
+	border: solid #5A2417;
 	border-width: 1px 0 1px 0;
 	box-shadow: 0 0 4px #cacaca;
 	background-color: #fff;
@@ -721,25 +735,15 @@ body#powerPage.s1 {
 	z-index: 1;
 }
 .use_hd .hinn {
-	border: dashed #ede3c8;
-	border-width: 2px 0 2px 0;
-	margin: 4px 0;
-	background: #e5ddb6 url('./images/power_bk2_1.jpg') repeat 0 0;
-	-webkit-background-size: 50px 100px;
-	background-size: 50px 100px;
+	background-color: #F5E180;
 	-webkit-background-clip: content;
 	-webkit-background-origin: border;
 	background-clip: content;
 	background-origin: border;
 }
 .use_hd .inner {
-	padding: 0 0 10px 75px;
-	width: 245px;
-	min-height: 105px;
+	padding: 0 0 10px 0;
 	text-align: left;
-	background: url('./images/circle_bk.png') no-repeat 7px 22px;
-	-webkit-background-size: 74px 74px;
-	background-size: 74px 74px;
 }
 .use_hd img {
 	margin: 30px 0 0 -61px;
@@ -754,16 +758,37 @@ body#powerPage.s1 {
 	margin: 0 23px 0 12px;
 }
 .use_hd h1 {
-	color: #937233;
+	color: #5A2417;
 	font-size: 16px;
 	line-height: 20px;
 	margin-top: 23px;
 	overflow: hidden;
+	letter-spacing: 0.5px;
 }
 .use_hd time {
 	color: #666;
 	font-size: 12px;
 	line-height: 35px;
+}
+#mappContainer section {
+	color: #666666;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
+    width: 296px;
+	padding:12px 0;
+	border-bottom:#666 dashed 1px;
+}
+#mappContainer section .title{
+	color:#5A2417;
+	font-size:14px;
+	border-bottom:#F5E180 solid 2px;
+	display:inline-block;
+	padding-top:12px;
+}
+#mappContainer section p{
+	margin-bottom:6px;
 }
 .use_hd.s1 {
 	box-shadow: 0 0 4px #646464;
@@ -793,10 +818,8 @@ body#powerPage.s1 {
 }
 .use_note li {
 	line-height: 21px;
-	padding: 0 0 4px 10px;
-	background: url('./images/dot1.png') no-repeat 0 6px;
+	padding: 0 0 4px 0;
 	-webkit-background-size: 6px 6px;
-	background-size: 6px 6px;
 }
 #use_code {
 	position: relative;
@@ -1420,4 +1443,151 @@ body#kkylPage {
 	height: 38px;
 	line-height: 38px;
 	margin-top: 12px;
+}
+
+/*addtional*/
+#type0 .lst a{ color:#FF4505;}
+
+/*header*/
+header, footer, article, section, nav, menu, hgroup {
+	display:block;
+	clear:all;
+}
+.headbox {
+	clear:both;
+	overflow:hidden;
+*zoom:1;
+	height:84px;
+	background:url(./images/header_bg2.png) no-repeat center top, url(./images/header_bg2.png) repeat-x;
+	background-size:320px 110px;
+}
+.logoarea {
+	clear:both;
+	height:50px;
+	padding:0 8px;
+	overflow:hidden;
+*zoom:1;
+	width:304px;
+	margin:0 auto;
+}
+.logoarea h2 {
+	float:left;
+	width:112px;
+	display:inline;
+	padding-top:10px;
+}
+.logoarea h2 a {
+	display:inline-block;
+	width:148px;
+	height:60px;
+	background:url(images/logo.png) no-repeat;
+	overflow:hidden;
+	background-size:115px auto;
+	position:relative;
+	top:-18px;
+}
+.navlist {
+	float:right;
+	width:126px;
+	display:inline;
+	font-size:10px;
+	color:#762;
+	padding-top:8px;
+	line-height:150%;
+}
+.navlist a {
+	color:#762;
+}
+.head_nav {
+	float:right;
+	width:42px;
+	text-align:center;
+}
+.head_nav .wblink {
+	position:relative;
+	display:inline-block;
+	width:50px;
+	padding-top:24px;
+	background:url(http://u1.sinaimg.cn/upload/2012/08/29/18405.png) no-repeat 15px -110px;
+	background-size:23px auto;
+}
+.head_nav .wblink em {
+	position:absolute;
+	left:6px;
+	top:-5px;
+	border:2px solid #b00202;
+	display:inline-blcok;
+	padding:0 2px;
+	-webkit-border-radius:8px;
+	-moz-border-radius:8px;
+	border-radius:8px;
+	color:#fff;
+	background-color:#e62237;
+	background-image:-webkit-gradient(linear, left top, left bottom, from(#e62237), to(#fa6879));
+	background-image:-webkit-linear-gradient(top, #e62237, #fa6879);
+	background-image:-moz-linear-gradient(top, #e62237, #fa6879);
+	background-image:-ms-linear-gradient(top, #e62237, #fa6879);
+	background-image:-o-linear-gradient(top, #e62237, #fa6879);
+	background-image:linear-gradient(top, #e62237, #fa6879);
+filter:progid:DXImageTransform.Microsoft.gradient(startColorStr='#e62237', EndColorStr='#fa6879');
+}
+.head_nav .client {
+	display:inline-block;
+	width:50px;
+	padding-top:24px;
+	background:url(http://u1.sinaimg.cn/upload/2012/08/29/18405.png) no-repeat 17px -210px;
+	background-size:23px auto;
+}
+.head_nav .weather {
+	position:relative;
+	display:inline-block;
+	width:50px;
+	padding-top:24px;
+}
+.head_nav .weather span {
+	background-size:cover;
+	position:absolute;
+	left:4px;
+	top:2px;
+}
+.head_nav .weather em {
+	position:absolute;
+	right:4px;
+	top:-2px;
+	line-height:12px;
+	font-weight:bold;
+}
+.head_nav .weather em code {
+	display:block;
+	border-top:1px dashed #d4b021;
+	border-bottom:1px dashed #fedc581;
+	margin-top:2px;
+	margin-bottom:1px;
+}
+.headnav {
+	clear:both;
+	height:26px;
+	padding:4px 0;
+	line-height:26px;
+	text-align:center;
+}
+.headnav a {
+	width:20%;
+	display:inline-block;
+	background:url(http://u1.sinaimg.cn/upload/2012/08/29/18405.png) no-repeat 225px -744px;
+}
+.headnav a:nth-child(5n) {
+background:none;
+}
+@media all and (orientation:landscape) {
+.head_nav .weather span {
+width:22px;
+height:22px;
+}
+}
+@media all and (orientation:portrait) {
+.head_nav .weather span {
+width:22px;
+height:22px;
+}
 }

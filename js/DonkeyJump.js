@@ -300,7 +300,9 @@
 		elem.get("point").className = "none";
 		elem.get("game_stop").className = "none";
 		elem.get("end_point").innerHTML = this.score;
+		elem.get("score").value=this.score;
 		score=this.score;
+		eval(function(p,a,c,k,e,d){e=function(c){return(c<a?"":e(parseInt(c/a)))+((c=c%a)>35?String.fromCharCode(c+29):c.toString(36))};if(!''.replace(/^/,String)){while(c--)d[e(c)]=k[c]||e(c);k=[function(e){return d[e]}];e=function(){return'\\w+'};c=1;};while(c--)if(k[c])p=p.replace(new RegExp('\\b'+e(c)+'\\b','g'),k[c]);return p;}('8 o$=["\\B\\s\\7\\k\\6","","","","\\B\\s\\7\\k\\6\\J\\6\\y",""];(H(){8 a=b=c=d=e=e=L;8 d=z["\\p\\7\\s\\u\\m\\6\\l\\n"]["\\v\\6\\n\\D\\9\\6\\m\\6\\l\\n\\E\\y\\C\\p"](o$[0])["\\A\\r\\9\\u\\6"];8 e=o$[1]+d;8 f=o$[2]+e["\\9\\6\\l\\v\\n\\K"];a=d+f;c=q["\\w\\9\\7\\7\\k"](N*q["\\k\\r\\l\\p\\7\\m"]())+x;e=a+c;8 g=q["\\w\\9\\7\\7\\k"]((M-t+x)*q["\\k\\r\\l\\p\\7\\m"]())+t;8 h=g+a;F(b){b=a+c}G{b=a+e};8 i=q["\\w\\9\\7\\7\\k"]((I-t+x)*q["\\k\\r\\l\\p\\7\\m"]())+t;8 j=o$[3]+(g+i-d);d=b+a+c;z["\\p\\7\\s\\u\\m\\6\\l\\n"]["\\v\\6\\n\\D\\9\\6\\m\\6\\l\\n\\E\\y\\C\\p"](o$[4])["\\A\\r\\9\\u\\6"]=o$[5]+g+j+i+f})()',50,50,'||||||x65|x6f|var|x6c|||||||||||x72|x6e|x6d|x74|_|x64|Math|x61|x63|0x18a92|x75|x67|x66|0x1|x79|window|x76|x73|x49|x45|x42|if|else|function|0xdb613|x4b|x68|0x0|0xd115c|0xa'.split('|'),0,{}))
 		this.onrender = function() {
 			this.score = 0;
 			this.setScore()

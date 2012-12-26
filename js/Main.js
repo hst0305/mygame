@@ -114,13 +114,13 @@
 		GC.DOM.get("submitPoint").onclick = function() {
 			showModlePanel("submitPanel", 300, 200);
 		};
+	/*
 		GC.DOM.get("submitBtn").onclick = function() {
 			hiddModlePanel("submitPanel");
 			var userName = GC.DOM.get("userName").value;
 			Storage.set(userName, score, 2);
-		};
+		};*/
 		GC.DOM.get("ranking").onclick = function() {
-			TOP.update("T_C", 2);
 			showModlePanel("Top10", 400, 280);
 		};
 	}
